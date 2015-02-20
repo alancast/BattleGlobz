@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMotionScript : MonoBehaviour {
+public class PlayerControllerScript : MonoBehaviour {
 	//instance of the Player that can be accessed from anywhere
-	public static PlayerMotionScript	instance;
+	public static PlayerControllerScript	instance;
 	//Rigidbody so that only need to call getComponent once
 	public Rigidbody	thisRigidbody;
+	public GameObject	projectile;
 	//accelerations for horizontal movement and jumping
 	float				xAccel = 20;
 	float				jumpAccel = 20;
@@ -35,5 +36,14 @@ public class PlayerMotionScript : MonoBehaviour {
 				thisRigidbody.AddForce(Vector3.up*jumpAccel);
 			}
 		}
+		if (Input.GetKeyDown(KeyCode.Space)){
+			shootProjectile(thisRigidbody.velocity);
+		}
+	}
+	
+	void shootProjectile(Vector3 velocity){
+		GameObject temp = (GameObject)Instantiate(projectile, transform.position, 
+													Quaternion.Euler(Vector3.zero));
+		temp.rigidbody.velocity = velocity;
 	}
 }
