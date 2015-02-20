@@ -6,6 +6,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	public static PlayerControllerScript	instance;
 	//Rigidbody so that only need to call getComponent once
 	public Rigidbody	thisRigidbody;
+	//must be added in inspector
+	//what will be shot when you fire the gun
 	public GameObject	projectile;
 	//accelerations for horizontal movement and jumping
 	float				xAccel = 20;
@@ -41,6 +43,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 	}
 	
+	//will instantiate a projectile with initial velocity "velocity" passed in
 	void shootProjectile(Vector3 velocity){
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, 
 													Quaternion.Euler(Vector3.zero));
