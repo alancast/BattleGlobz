@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\_Scripts\FollowCamScript.cs" />
-     <Compile Include="Assets\_Scripts\PlayerMotionScript.cs" />
+     <Compile Include="Assets\_Scripts\PlayerControllerScript.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.2/UnityEngine.UI.dll</HintPath>
  </Reference>
