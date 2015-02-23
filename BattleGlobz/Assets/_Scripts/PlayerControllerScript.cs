@@ -17,6 +17,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 	float				xAccel = 20;
 	float				jumpAccel = 400;
@@ -27,8 +28,15 @@ public class PlayerControllerScript : MonoBehaviour {
 	//maximum speeds (directionless) for horizontal and jumping
 	float 				maxXSpeed = 50;
 	float 				maxJumpSpeed = 70;
+=======
+	float				xAccel = 400;
+	float				jumpAccel = 4000;
+	//maximum speeds (directionless) for horizontal and jumping
+	float 				maxXSpeed = 30;
+	float 				maxJumpSpeed = 30;
+>>>>>>> Max
 	//speed projectile moves at
-	float				projectileSpeed = 20;
+	float				projectileSpeed = 50;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
@@ -39,9 +47,15 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
+<<<<<<< HEAD
 =======
 	public bool				testingWithKeyboard = true;
 >>>>>>> Stashed changes
+=======
+
+	//tells whether the player is on the ground or not. set in isGrounded() called on update
+	bool				grounded = true;
+>>>>>>> Max
 	
 	void Awake(){
 		instance = this;
@@ -62,13 +76,46 @@ public class PlayerControllerScript : MonoBehaviour {
 
 		if (isDead && Time.time > timeOfDeath + deathTimer)
 			handleRespawn ();
+
+		isGrounded ();
 		handleVelocity();
 		handleJumping();
 		handleGunAndShield();
 	}
-	
+
+	/*void OnDrawGizmos(){
+		Gizmos.color = Color.yellow;
+		Vector3 _from = thisRigidbody.transform.position;
+		_from.y -= thisRigidbody.transform.lossyScale.y / 3;
+		Vector3 _to = _from;
+		_to.y -= 1f;
+
+
+		Gizmos.DrawLine (_from, _to);
+	}*/
+
+	void isGrounded(){
+		Vector3 origin = thisRigidbody.transform.position;
+		//origin.y -= thisRigidbody.transform.lossyScale.y / 2;
+		Vector3 dwn = thisRigidbody.transform.TransformDirection (Vector3.down);
+
+		if (Physics.Raycast (origin, dwn, 1f))
+			grounded = true;
+		else
+			grounded = false;
+	}
+
 	//controls the players velocity every update
 	void handleVelocity(){
+
+		if (grounded) {
+			maxXSpeed = 30;
+			xAccel = 400;
+		} else {
+			maxXSpeed = 15;
+			xAccel = 100;
+		}
+
 		//for testing with keyboard
 //		--------------------------------------------------------------------------
 		if (testingWithKeyboard){
@@ -116,7 +163,7 @@ public class PlayerControllerScript : MonoBehaviour {
 //		--------------------------------------------------------------------------
 		if (testingWithKeyboard){
 			if (Input.GetKeyDown(KeyCode.UpArrow)){
-				if (thisRigidbody.velocity.y < maxJumpSpeed){
+				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
 				}
 			}
@@ -127,6 +174,7 @@ public class PlayerControllerScript : MonoBehaviour {
 <<<<<<< Updated upstream
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
+<<<<<<< HEAD
 =======
 			var gameController = InputManager.ActiveDevice;
 			if (gameController.RightBumper.WasPressed){
@@ -137,13 +185,21 @@ public class PlayerControllerScript : MonoBehaviour {
 					if(thisRigidbody.velocity.x < -maxXSpeed + .1f) tmp.x = maxXSpeed/2f;
 
 					thisRigidbody.AddForce(tmp);
+=======
+				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
+					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+>>>>>>> Max
 				}
 			}
 		}
 
 		if (thisRigidbody.velocity.y > maxJumpSpeed) {
+<<<<<<< HEAD
 			Vector3 tmp = new Vector3(0, maxJumpSpeed, 0);
 			thisRigidbody.velocity = tmp;
+=======
+			thisRigidbody.velocity = new Vector3(thisRigidbody.velocity.x, maxJumpSpeed, 0);
+>>>>>>> Max
 		}
 	}
 		
