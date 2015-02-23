@@ -17,22 +17,31 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
+<<<<<<< Updated upstream
 	float				xAccel = 20;
 	float				jumpAccel = 400;
+=======
+	float				xAccel = 600;
+	float				jumpAccel = 6000;
+>>>>>>> Stashed changes
 	//maximum speeds (directionless) for horizontal and jumping
-	float 				maxXSpeed = 20;
-	float 				maxJumpSpeed = 10;
+	float 				maxXSpeed = 50;
+	float 				maxJumpSpeed = 70;
 	//speed projectile moves at
 	float				projectileSpeed = 20;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
+<<<<<<< Updated upstream
 	public bool			testingWithKeyboard = false;
 	//Handling death and respawning
 	Vector3				respawnPoint;
 	bool				isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
+=======
+	public bool				testingWithKeyboard = true;
+>>>>>>> Stashed changes
 	
 	void Awake(){
 		instance = this;
@@ -73,6 +82,12 @@ public class PlayerControllerScript : MonoBehaviour {
 					thisRigidbody.AddForce(Vector3.right*xAccel);
 				}
 			}
+			/*if (Input.GetKeyUp(KeyCode.RightArrow)){
+				thisRigidbody.AddForce(Vector3.left*maxXSpeed/3);			
+			}
+			if (Input.GetKeyUp(KeyCode.LeftArrow)){
+				thisRigidbody.AddForce(Vector3.right*maxXSpeed/3);
+			}*/
 		}
 //		--------------------------------------------------------------------------
 		//for testing with controller
@@ -109,12 +124,26 @@ public class PlayerControllerScript : MonoBehaviour {
 //		--------------------------------------------------------------------------
 		//for testing with controller
 		else {
+<<<<<<< Updated upstream
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
+=======
+			var gameController = InputManager.ActiveDevice;
+			if (gameController.RightBumper.WasPressed){
+>>>>>>> Stashed changes
 				if (thisRigidbody.velocity.y < maxJumpSpeed){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					Vector3 tmp = Vector3.up*jumpAccel;
+					if(thisRigidbody.velocity.x > maxXSpeed - .1f) tmp.x = -maxXSpeed/2f;
+					if(thisRigidbody.velocity.x < -maxXSpeed + .1f) tmp.x = maxXSpeed/2f;
+
+					thisRigidbody.AddForce(tmp);
 				}
 			}
+		}
+
+		if (thisRigidbody.velocity.y > maxJumpSpeed) {
+			Vector3 tmp = new Vector3(0, maxJumpSpeed, 0);
+			thisRigidbody.velocity = tmp;
 		}
 	}
 		
