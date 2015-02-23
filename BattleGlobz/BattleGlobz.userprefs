@@ -1,17 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-<<<<<<< HEAD
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/PlayerControllerScript.cs">
     <Files>
-      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="81" Column="1" />
-      <File FileName="../../EECS494-W15-P1.1-GriebConnor_GlassJacob/Assets/PE_Guy.cs" Line="1" Column="1" />
-      <File FileName="Assets/_Scripts/ProjectileScript.cs" Line="1" Column="1" />
-=======
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/ProjectileScript.cs">
-    <Files>
-      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="238" Column="2" />
+      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="21" Column="28" />
       <File FileName="Assets/_Scripts/ProjectileScript.cs" Line="44" Column="1" />
->>>>>>> Max
+      <File FileName="Assets/_Scripts/FollowCamScript.cs" Line="23" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

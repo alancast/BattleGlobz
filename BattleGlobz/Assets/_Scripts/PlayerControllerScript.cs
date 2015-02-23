@@ -17,45 +17,27 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-	float				xAccel = 20;
-	float				jumpAccel = 400;
-=======
-	float				xAccel = 600;
-	float				jumpAccel = 6000;
->>>>>>> Stashed changes
-	//maximum speeds (directionless) for horizontal and jumping
-	float 				maxXSpeed = 50;
-	float 				maxJumpSpeed = 70;
-=======
 	float				xAccel = 400;
 	float				jumpAccel = 4000;
 	//maximum speeds (directionless) for horizontal and jumping
 	float 				maxXSpeed = 30;
 	float 				maxJumpSpeed = 30;
->>>>>>> Max
+
 	//speed projectile moves at
 	float				projectileSpeed = 50;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
-<<<<<<< Updated upstream
+
 	public bool			testingWithKeyboard = false;
 	//Handling death and respawning
 	Vector3				respawnPoint;
 	bool				isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
-<<<<<<< HEAD
-=======
-	public bool				testingWithKeyboard = true;
->>>>>>> Stashed changes
-=======
-
+	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
->>>>>>> Max
 	
 	void Awake(){
 		instance = this;
@@ -171,35 +153,19 @@ public class PlayerControllerScript : MonoBehaviour {
 //		--------------------------------------------------------------------------
 		//for testing with controller
 		else {
-<<<<<<< Updated upstream
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
-<<<<<<< HEAD
-=======
-			var gameController = InputManager.ActiveDevice;
-			if (gameController.RightBumper.WasPressed){
->>>>>>> Stashed changes
-				if (thisRigidbody.velocity.y < maxJumpSpeed){
-					Vector3 tmp = Vector3.up*jumpAccel;
-					if(thisRigidbody.velocity.x > maxXSpeed - .1f) tmp.x = -maxXSpeed/2f;
-					if(thisRigidbody.velocity.x < -maxXSpeed + .1f) tmp.x = maxXSpeed/2f;
-
-					thisRigidbody.AddForce(tmp);
-=======
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
->>>>>>> Max
 				}
 			}
 		}
 
 		if (thisRigidbody.velocity.y > maxJumpSpeed) {
-<<<<<<< HEAD
 			Vector3 tmp = new Vector3(0, maxJumpSpeed, 0);
 			thisRigidbody.velocity = tmp;
-=======
+
 			thisRigidbody.velocity = new Vector3(thisRigidbody.velocity.x, maxJumpSpeed, 0);
->>>>>>> Max
 		}
 	}
 		
