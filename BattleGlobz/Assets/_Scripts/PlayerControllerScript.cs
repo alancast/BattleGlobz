@@ -243,10 +243,14 @@ public class PlayerControllerScript : MonoBehaviour {
 		return retVec;
 	}
 
-	public void handleDeath(){
+	public void handleDeath(bool right){
 		this.transform.position = new Vector3 (-100, -100, 0);
 		timeOfDeath = Time.time;
 		isDead = true;
+		CameraMovementScript.instance.moveCamera(right);
+		CameraWallScript.moving = true;
+		CameraWallScript.right = right;
+		CameraWallScript.stopMoving = Time.time + .1f;
 
 	}
 
