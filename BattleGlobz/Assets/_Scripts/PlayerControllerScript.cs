@@ -18,13 +18,13 @@ public class PlayerControllerScript : MonoBehaviour {
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
 	float				xAccel = 400;
-	float				jumpAccel = 4000;
+	float				jumpAccel = 2000;
 	//maximum speeds (directionless) for horizontal and jumping
-	float 				maxXSpeed = 30;
+	float 				maxXSpeed = 10;
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
-	float				projectileSpeed = 50;
+	float				projectileSpeed = 15;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
@@ -78,10 +78,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
-		//origin.y -= thisRigidbody.transform.lossyScale.y / 2;
-		Vector3 dwn = thisRigidbody.transform.TransformDirection (Vector3.down);
-
-		if (Physics.Raycast (origin, dwn, 1f))
+		if (Physics.Raycast (origin, Vector3.down, collider.bounds.size.y + .05f))
 			grounded = true;
 		else
 			grounded = false;
@@ -89,15 +86,6 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//controls the players velocity every update
 	void handleVelocity(){
-
-		if (grounded) {
-			maxXSpeed = 30;
-			xAccel = 400;
-		} else {
-			maxXSpeed = 15;
-			xAccel = 100;
-		}
-
 		//for testing with keyboard
 //		--------------------------------------------------------------------------
 		if (testingWithKeyboard){
@@ -111,12 +99,6 @@ public class PlayerControllerScript : MonoBehaviour {
 					thisRigidbody.AddForce(Vector3.right*xAccel);
 				}
 			}
-			/*if (Input.GetKeyUp(KeyCode.RightArrow)){
-				thisRigidbody.AddForce(Vector3.left*maxXSpeed/3);			
-			}
-			if (Input.GetKeyUp(KeyCode.LeftArrow)){
-				thisRigidbody.AddForce(Vector3.right*maxXSpeed/3);
-			}*/
 		}
 //		--------------------------------------------------------------------------
 		//for testing with controller
@@ -160,13 +142,6 @@ public class PlayerControllerScript : MonoBehaviour {
 				}
 			}
 		}
-
-		if (thisRigidbody.velocity.y > maxJumpSpeed) {
-			Vector3 tmp = new Vector3(0, maxJumpSpeed, 0);
-			thisRigidbody.velocity = tmp;
-
-			thisRigidbody.velocity = new Vector3(thisRigidbody.velocity.x, maxJumpSpeed, 0);
-		}
 	}
 		
 	//handles the gun and shield every update, rotation and shooting
@@ -191,7 +166,6 @@ public class PlayerControllerScript : MonoBehaviour {
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
-				print ("shield UP");
 				shieldUp = true;
 				shield.renderer.enabled = true;
 				shield.collider.enabled = true;
@@ -199,7 +173,6 @@ public class PlayerControllerScript : MonoBehaviour {
 			}
 			// remove shield
 			if (gameController.LeftTrigger.WasReleased) {
-				print ("shield DOWN");
 				shieldUp = false;
 				shield.renderer.enabled = false;
 				shield.collider.enabled = false;
@@ -217,7 +190,6 @@ public class PlayerControllerScript : MonoBehaviour {
 			shieldEnergy -= 100f * Time.deltaTime;
 			if(shieldEnergy < 0f){
 				shieldEnergy = 0f;
-				print ("shield DOWN");
 				shieldUp = false;
 				shield.renderer.enabled = false;
 				shield.collider.enabled = false;
@@ -228,7 +200,6 @@ public class PlayerControllerScript : MonoBehaviour {
 				shieldEnergy = maxShieldEnergy;
 			}
 		}
-		print (shieldEnergy);
 		shield.transform.localScale = new Vector3(0.3f, 2f * shieldEnergy/maxShieldEnergy, 1f);
 	}
 	
