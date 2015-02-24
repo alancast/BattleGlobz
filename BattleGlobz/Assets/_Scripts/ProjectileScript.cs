@@ -12,22 +12,19 @@ public class ProjectileScript : MonoBehaviour {
 				return;
 			else
 				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath();
+				Destroy(this.gameObject);
 			break;
 		case "Player1":
 			if(this.tag == "Bullet1" )
 				return;
 			else
 				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath();
+				Destroy(this.gameObject);
 				break;
 		case "Shield":
 			Destroy(this.gameObject);
 			break;
-			
-			
-			
 		}
-		
-		
 	}
 
 	void Start () {
