@@ -21,7 +21,7 @@ public class ProjectileScript : MonoBehaviour {
 				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath();
 				Destroy(this.gameObject);
 				break;
-		case "Shield":
+		default:
 			Destroy(this.gameObject);
 			break;
 		}
