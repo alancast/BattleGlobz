@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraMovementScript : MonoBehaviour {
 	static public CameraMovementScript instance;
 	//amount the camera will jump on a kill
-	float 			jumpSize = 1f;
+	float 			jumpSize = 2f;
 	
 	void Awake(){
 		instance = this;
