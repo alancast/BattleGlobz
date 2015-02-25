@@ -22,7 +22,10 @@ public class ProjectileScript : MonoBehaviour {
 				Destroy(this.gameObject);
 				break;
 		default:
-			Destroy(this.gameObject);
+			if(this.tag == "Bullet1" || this.tag == "Bullet0")
+				return;
+			else
+				Destroy(this.gameObject);
 			break;
 		}
 	}

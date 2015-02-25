@@ -260,7 +260,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void handleRespawn(){
 		thisRigidbody.velocity = new Vector3(0f,0f,0f);
-		this.transform.position = respawnPoint;
+		this.transform.position = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		isDead = false;
 
 	}
