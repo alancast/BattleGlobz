@@ -14,6 +14,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool 			shieldUp = false;
 	float 			shieldEnergy;
 	float 			maxShieldEnergy = 200f;
+	float			shieldSize;
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
@@ -24,7 +25,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
-	float				projectileSpeed = 15;
+	float				projectileSpeed = 40;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
@@ -48,7 +49,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		shield.collider.enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		this.tag = "Player" + playerNum.ToString ();
-		respawnPoint = this.transform.position;
+		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
+		shieldSize = shield.transform.lossyScale.y;
 	}
 	
 	// Update is called once per frame
@@ -186,8 +188,10 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 
 		// Update shield energy and size
+		//smaller numbers = slower charge
+		float shieldChargeRate = 50f;
 		if (shieldUp) {
-			shieldEnergy -= 100f * Time.deltaTime;
+			shieldEnergy -= shieldChargeRate * Time.deltaTime;
 			if(shieldEnergy < 0f){
 				shieldEnergy = 0f;
 				shieldUp = false;
@@ -195,12 +199,12 @@ public class PlayerControllerScript : MonoBehaviour {
 				shield.collider.enabled = false;
 			}
 		} else {
-			shieldEnergy += 100f * Time.deltaTime;
+			shieldEnergy += shieldChargeRate * Time.deltaTime;
 			if(shieldEnergy > maxShieldEnergy){
 				shieldEnergy = maxShieldEnergy;
 			}
 		}
-		shield.transform.localScale = new Vector3(0.3f, 2f * shieldEnergy/maxShieldEnergy, 1f);
+		shield.transform.localScale = new Vector3(0.3f, shieldSize * shieldEnergy/maxShieldEnergy, 1f);
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
