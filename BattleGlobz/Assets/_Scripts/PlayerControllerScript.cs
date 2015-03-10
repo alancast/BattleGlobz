@@ -43,7 +43,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	void Awake(){
 		instance = this;
 		thisRigidbody = GetComponent<Rigidbody>();
-		gun = transform.GetChild(0).gameObject;
+		gun = transform.GetChild(0).GetChild(0).gameObject;
 		shield = transform.GetChild(1).GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
