@@ -7,6 +7,7 @@ public class ProjectileScript : MonoBehaviour {
 	// Use this for initialization
 	void OnTriggerEnter(Collider other){
 		switch (other.gameObject.tag) {
+<<<<<<< HEAD
 			case "Player":
 				int otherPlayerNum = other.gameObject.GetComponent<PlayerControllerScript>().playerNum;
 				// picked up by a player
@@ -24,6 +25,21 @@ public class ProjectileScript : MonoBehaviour {
 				}
 				break;
 			default:
+=======
+		case "Player0":
+			if(this.tag == "Bullet0" )
+				return;
+			else
+				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(true, 1);
+				Destroy(this.gameObject);
+				break;
+		case "Player1":
+			if(this.tag == "Bullet1" )
+				return;
+			else
+				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false, 0);
+				Destroy(this.gameObject);
+>>>>>>> Alex
 				break;
 <<<<<<< HEAD
 		default:

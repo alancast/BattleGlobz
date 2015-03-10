@@ -24,6 +24,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 <<<<<<< HEAD
+<<<<<<< HEAD
 																																											GlobalSection(MonoDevelopProperties) = preSolution
 =======
 																																													GlobalSection(MonoDevelopProperties) = preSolution
@@ -32,6 +33,11 @@ Global
 =======
 																																													GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> JakeScatter
+=======
+																																													GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																													GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> Alex
 >>>>>>> AlexBranch
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
