@@ -36,6 +36,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
+	bool 				hasProjectile = false;
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
@@ -56,7 +57,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
-		this.tag = "Player" + playerNum.ToString ();
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		shieldSize = shield.transform.lossyScale.y;
 	}
@@ -203,9 +203,10 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if (gameController.RightTrigger.WasPressed){
+			if (gameController.RightTrigger.WasPressed && hasProjectile){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * projectileSpeed);
+				hasProjectile = false;
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
@@ -250,10 +251,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	void shootProjectile(Vector3 velocity){
-		GameObject temp = (GameObject)Instantiate(projectile, transform.position, 
-		                                          Quaternion.Euler(Vector3.zero));
+		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
-		temp.tag = "Bullet" + playerNum.ToString ();
+		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
+
 	}
 	
 	//checks if the right stick is pressed over an assigned threshold
@@ -304,6 +305,10 @@ public class PlayerControllerScript : MonoBehaviour {
 		this.transform.position = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		isDead = false;
 
+	}
+
+	public void pickUpProjectile(){
+		hasProjectile = true;
 	}
 }
 	
