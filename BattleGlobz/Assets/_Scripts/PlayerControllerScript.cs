@@ -39,6 +39,14 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
+	//tells whether or not the player is dashing 
+	bool				isDashing = false;
+	bool				canDash = true;
+	float				dashTime = 0f;
+	float				dashLength = .05f;
+	float 				dashSpeed = 4000;
+	Vector3				dashForce = Vector3.zero;
+	Vector3				preDashVel = Vector3.zero;
 	
 	void Awake(){
 		instance = this;
@@ -65,6 +73,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		handleVelocity();
 		handleJumping();
 		handleGunAndShield();
+		handleDash ();
 	}
 
 	/*void OnDrawGizmos(){
@@ -78,10 +87,42 @@ public class PlayerControllerScript : MonoBehaviour {
 		Gizmos.DrawLine (_from, _to);
 	}*/
 
+	void handleDash() {
+		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if(!isDashing && canDash && !grounded && gameController.RightBumper.WasPressed){
+			isDashing = true;
+			canDash = false;
+			dashTime = Time.time;
+			preDashVel = thisRigidbody.velocity;
+			dashForce = Vector3.zero;
+			dashForce.x = dashSpeed * gameController.LeftStickX;
+			dashForce.y = dashSpeed * gameController.LeftStickY;
+			thisRigidbody.AddForce(dashForce);
+		}
+		if (Time.time > dashTime + dashLength && isDashing) {
+			isDashing = false;
+			if((Mathf.Abs(thisRigidbody.velocity.x) > Mathf.Abs(preDashVel.x + .1f))){
+				print ("pushing back in the X");
+				Vector3 forceVector = Vector3.zero;
+				forceVector.x = -dashForce.x;
+				thisRigidbody.AddForce (forceVector);
+			}
+			if((Mathf.Abs(thisRigidbody.velocity.y) >= Mathf.Abs(preDashVel.y))){
+				Vector3 forceVector = Vector3.zero;
+				forceVector.y = -dashForce.y;
+				thisRigidbody.AddForce (forceVector);
+			}
+		}
+
+	}
+
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
-		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider>().bounds.size.y + .05f))
+		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
+			if(!grounded)
+				canDash = true;
 			grounded = true;
+		}
 		else
 			grounded = false;
 	}
@@ -107,14 +148,14 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.LeftStick.Left){
-				if (thisRigidbody.velocity.x > -maxXSpeed){
+				if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
 					Vector3 forceVector = Vector3.zero;
 					forceVector.x = gameController.LeftStickX;
 					thisRigidbody.AddForce(forceVector*xAccel);
 				}
 			}
 			if (gameController.LeftStick.Right){
-				if (thisRigidbody.velocity.x < maxXSpeed){
+				if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
 					Vector3 forceVector = Vector3.zero;
 					forceVector.x = gameController.LeftStickX;
 					thisRigidbody.AddForce(forceVector*xAccel);
