@@ -39,6 +39,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
+	//how many hits it takes to die
+	int					maxHealth = 2;
+	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
+	int					currentHealth = 2;
 	
 	void Awake(){
 		instance = this;
@@ -66,17 +70,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		handleJumping();
 		handleGunAndShield();
 	}
-
-	/*void OnDrawGizmos(){
-		Gizmos.color = Color.yellow;
-		Vector3 _from = thisRigidbody.transform.position;
-		_from.y -= thisRigidbody.transform.lossyScale.y / 3;
-		Vector3 _to = _from;
-		_to.y -= 1f;
-
-
-		Gizmos.DrawLine (_from, _to);
-	}*/
 
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
@@ -247,14 +240,22 @@ public class PlayerControllerScript : MonoBehaviour {
 		return retVec;
 	}
 
-	public void handleDeath(bool right){
+	//bool right is if the camera will move right or left (only valid without continuous movement)
+	//int killerNum is the number of the player who made the kill
+	public void handleDeath(bool right, int killerNum){
+		if (currentHealth != 1){
+			currentHealth--;
+			return;
+		}
+		currentHealth = maxHealth;
 		this.transform.position = new Vector3 (-100, -100, 0);
 		timeOfDeath = Time.time;
 		isDead = true;
-		CameraMovementScript.instance.moveCamera(right);
-		CameraWallScript.moving = true;
-		CameraWallScript.right = right;
-		CameraWallScript.stopMoving = Time.time + .1f;
+		ContinuousMovingCameraScript.instance.addKill(killerNum);
+//		CameraMovementScript.instance.moveCamera(right);
+//		CameraWallScript.moving = true;
+//		CameraWallScript.right = right;
+//		CameraWallScript.stopMoving = Time.time + .1f;
 
 	}
 

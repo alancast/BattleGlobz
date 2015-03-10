@@ -11,14 +11,14 @@ public class ProjectileScript : MonoBehaviour {
 			if(this.tag == "Bullet0" )
 				return;
 			else
-				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(true);
+				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(true, 1);
 				Destroy(this.gameObject);
-			break;
+				break;
 		case "Player1":
 			if(this.tag == "Bullet1" )
 				return;
 			else
-				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false);
+				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false, 0);
 				Destroy(this.gameObject);
 				break;
 		default:
