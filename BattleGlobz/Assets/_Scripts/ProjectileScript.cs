@@ -2,42 +2,39 @@
 using System.Collections;
 
 public class ProjectileScript : MonoBehaviour {
-	//object will get destroyed after timeToLive expires
-	float timeToLive;
+	public int ownerNum;
+
 	// Use this for initialization
 	void OnTriggerEnter(Collider other){
 		switch (other.gameObject.tag) {
-		case "Player0":
-			if(this.tag == "Bullet0" )
-				return;
-			else
-				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(true);
-				Destroy(this.gameObject);
-			break;
-		case "Player1":
-			if(this.tag == "Bullet1" )
-				return;
-			else
-				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false);
-				Destroy(this.gameObject);
+			case "Player":
+				int otherPlayerNum = other.gameObject.GetComponent<PlayerControllerScript>().playerNum;
+				// picked up by a player
+				if(ownerNum == -1) {
+					print("picked up");
+					ownerNum = otherPlayerNum;
+					Destroy(this.gameObject);
+					other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();
+				}
+				else if(ownerNum != otherPlayerNum) {
+					other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false);
+				}
+				else { // ownerNum == otherPlayerNum
+					//
+				}
 				break;
-		default:
-			if(this.tag == "Bullet1" || this.tag == "Bullet0")
-				return;
-			else
-				Destroy(this.gameObject);
-			break;
+			default:
+				break;
 		}
 	}
-
-	void Start () {
-		timeToLive = Time.time + 3f;
-	}
 	
-	// Update is called once per frame
 	void Update () {
-		if (timeToLive < Time.time){
-			Destroy(this.gameObject);
+		// if moving slowly and on the ground, make nuetral
+		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < 2f) {
+			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
+				GetComponent<Renderer> ().material.color = Color.gray;
+				ownerNum = -1;
+			}
 		}
 	}
 }
