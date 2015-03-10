@@ -40,7 +40,6 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
-<<<<<<< HEAD
 	//tells whether or not the player is dashing 
 	bool				isDashing = false;
 	bool				canDash = true;
@@ -49,12 +48,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	float 				dashSpeed = 4000;
 	Vector3				dashForce = Vector3.zero;
 	Vector3				preDashVel = Vector3.zero;
-=======
 	//how many hits it takes to die
 	int					maxHealth = 2;
 	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
 	int					currentHealth = 2;
->>>>>>> Alex
 	
 	void Awake(){
 		instance = this;
@@ -82,18 +79,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		handleGunAndShield();
 		handleDash ();
 	}
-
-<<<<<<< HEAD
-	/*void OnDrawGizmos(){
-		Gizmos.color = Color.yellow;
-		Vector3 _from = thisRigidbody.transform.position;
-		_from.y -= thisRigidbody.transform.lossyScale.y / 3;
-		Vector3 _to = _from;
-		_to.y -= 1f;
-
-
-		Gizmos.DrawLine (_from, _to);
-	}*/
 
 	void handleDash() {
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
@@ -124,8 +109,6 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	}
 
-=======
->>>>>>> Alex
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
 		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
@@ -202,7 +185,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		//for testing with keyboard
 //		--------------------------------------------------------------------------
 		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.Space)){
+			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * projectileSpeed);
 			}

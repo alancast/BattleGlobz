@@ -1,27 +1,12 @@
 ﻿<Properties>
-<<<<<<< HEAD
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="c:\Users\Connor\Desktop\BattleGlobz\BattleGlobz\BattleGlobz\Assets\InControl\Source\VersionInfo.cs">
-    <Files>
-      <File FileName="Assets\_Scripts\ProjectileScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Scripts\PlayerControllerScript.cs" Line="275" Column="2" />
-      <File FileName="c:\Users\Connor\Desktop\BattleGlobz\BattleGlobz\BattleGlobz\Assets\InControl\Source\VersionInfo.cs" Line="16" Column="44" />
-=======
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/ProjectileScript.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/PlayerControllerScript.cs">
     <Files>
-      <File FileName="Assets/_Scripts/ProjectileScript.cs" Line="10" Column="4" />
-      <File FileName="Assets/_Scripts/CameraMovementScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="1" Column="1" />
-      <File FileName="Assets/InControl/Editor/InControlBuilder.cs" Line="16" Column="68" />
->>>>>>> JakeScatter
+      <File FileName="Assets/_Scripts/ContinuousMovingCameraScript.cs" Line="9" Column="25" />
+      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="188" Column="56" />
+      <File FileName="Assets/_Scripts/ProjectileScript.cs" Line="20" Column="90" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-=======
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
->>>>>>> Alex
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
