@@ -45,8 +45,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
 		shield = transform.GetChild(1).GetChild(0).gameObject;
-		shield.renderer.enabled = false;
-		shield.collider.enabled = false;
+		shield.GetComponent<Renderer>().enabled = false;
+		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		this.tag = "Player" + playerNum.ToString ();
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
@@ -80,7 +80,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
-		if (Physics.Raycast (origin, Vector3.down, collider.bounds.size.y + .05f))
+		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider>().bounds.size.y + .05f))
 			grounded = true;
 		else
 			grounded = false;
@@ -169,15 +169,15 @@ public class PlayerControllerScript : MonoBehaviour {
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
 				shieldUp = true;
-				shield.renderer.enabled = true;
-				shield.collider.enabled = true;
+				shield.GetComponent<Renderer>().enabled = true;
+				shield.GetComponent<Collider>().enabled = true;
 
 			}
 			// remove shield
 			if (gameController.LeftTrigger.WasReleased) {
 				shieldUp = false;
-				shield.renderer.enabled = false;
-				shield.collider.enabled = false;
+				shield.GetComponent<Renderer>().enabled = false;
+				shield.GetComponent<Collider>().enabled = false;
 			}
 			//rotate gun and shield
 			if (rightStickPressed()){
@@ -195,8 +195,8 @@ public class PlayerControllerScript : MonoBehaviour {
 			if(shieldEnergy < 0f){
 				shieldEnergy = 0f;
 				shieldUp = false;
-				shield.renderer.enabled = false;
-				shield.collider.enabled = false;
+				shield.GetComponent<Renderer>().enabled = false;
+				shield.GetComponent<Collider>().enabled = false;
 			}
 		} else {
 			shieldEnergy += shieldChargeRate * Time.deltaTime;
@@ -211,7 +211,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	void shootProjectile(Vector3 velocity){
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, 
 		                                          Quaternion.Euler(Vector3.zero));
-		temp.rigidbody.velocity = velocity;
+		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.tag = "Bullet" + playerNum.ToString ();
 	}
 	
