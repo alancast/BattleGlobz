@@ -49,9 +49,9 @@ public class PlayerControllerScript : MonoBehaviour {
 	Vector3				dashForce = Vector3.zero;
 	Vector3				preDashVel = Vector3.zero;
 	//how many hits it takes to die
-	int					maxHealth = 2;
+	int					maxHealth = 1;
 	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
-	int					currentHealth = 2;
+	int					currentHealth = 1;
 	
 	void Awake(){
 		instance = this;
