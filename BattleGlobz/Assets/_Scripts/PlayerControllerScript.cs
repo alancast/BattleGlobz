@@ -282,9 +282,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		return retVec;
 	}
 
-	//bool right is if the camera will move right or left (only valid without continuous movement)
 	//int killerNum is the number of the player who made the kill
-	public void handleDeath(bool right, int killerNum){
+	public void handleDeath(int killerNum){
 		if (currentHealth != 1){
 			currentHealth--;
 			return;
@@ -294,18 +293,12 @@ public class PlayerControllerScript : MonoBehaviour {
 		timeOfDeath = Time.time;
 		isDead = true;
 		ContinuousMovingCameraScript.instance.addKill(killerNum);
-//		CameraMovementScript.instance.moveCamera(right);
-//		CameraWallScript.moving = true;
-//		CameraWallScript.right = right;
-//		CameraWallScript.stopMoving = Time.time + .1f;
-
 	}
 
 	void handleRespawn(){
 		thisRigidbody.velocity = new Vector3(0f,0f,0f);
 		this.transform.position = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		isDead = false;
-
 	}
 
 	public void pickUpProjectile(){
