@@ -4,6 +4,12 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
 
+	void OnTriggerStay(Collider other){
+		if (ownerNum == -1){
+			OnTriggerEnter(other);
+		}
+	}
+
 	// Use this for initialization
 	void OnTriggerEnter(Collider other){
 		switch (other.gameObject.tag) {
@@ -17,7 +23,7 @@ public class ProjectileScript : MonoBehaviour {
 					other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();
 				}
 				else if(ownerNum != otherPlayerNum) {
-					other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(false, ownerNum);
+					other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(ownerNum);
 				}
 				else { // ownerNum == otherPlayerNum
 					//
