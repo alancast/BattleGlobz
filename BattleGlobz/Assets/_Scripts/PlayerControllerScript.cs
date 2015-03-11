@@ -18,7 +18,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
-	float				xAccel = 400;
+	float				xAccel = 40000;
 	float				jumpAccel = 2000;
 	//maximum speeds (directionless) for horizontal and jumping
 	float 				maxXSpeed = 10;
@@ -127,12 +127,12 @@ public class PlayerControllerScript : MonoBehaviour {
 		if (testingWithKeyboard){
 			if (Input.GetKey(KeyCode.LeftArrow)){
 				if (thisRigidbody.velocity.x > -maxXSpeed){
-					thisRigidbody.AddForce(Vector3.left*xAccel);
+					thisRigidbody.AddForce(Vector3.left*xAccel*Time.deltaTime);
 				}
 			}
 			if (Input.GetKey(KeyCode.RightArrow)){
 				if (thisRigidbody.velocity.x < maxXSpeed){
-					thisRigidbody.AddForce(Vector3.right*xAccel);
+					thisRigidbody.AddForce(Vector3.right*xAccel*Time.deltaTime);
 				}
 			}
 		}
@@ -144,14 +144,14 @@ public class PlayerControllerScript : MonoBehaviour {
 				if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
 					Vector3 forceVector = Vector3.zero;
 					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel);
+					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 				}
 			}
 			if (gameController.LeftStick.Right){
 				if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
 					Vector3 forceVector = Vector3.zero;
 					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel);
+					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 				}
 			}
 		}
@@ -174,7 +174,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					thisRigidbody.AddForce(Vector3.up*jumpAccel*Time.deltaTime);
 				}
 			}
 		}
