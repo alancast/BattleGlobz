@@ -174,7 +174,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel*Time.deltaTime);
+					thisRigidbody.AddForce(Vector3.up*jumpAccel);
 				}
 			}
 		}
