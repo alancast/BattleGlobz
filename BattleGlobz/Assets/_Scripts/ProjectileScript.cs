@@ -39,8 +39,8 @@ public class ProjectileScript : MonoBehaviour {
 		case "Shield":
 			//This will make sure that you can't push a live ball across the floor
 			if(ownerNum != -1){
-				otherPlayerNum = other.transform.parent.parent.GetComponent<PlayerControllerScript>().playerNum;
-				GetComponent<Renderer> ().material = other.transform.parent.parent.GetComponent<Renderer> ().material;
+				otherPlayerNum = other.transform.parent.GetComponent<PlayerControllerScript>().playerNum;
+				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<Renderer> ().material;
 				ownerNum = otherPlayerNum;
 			}
 			break;
