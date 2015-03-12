@@ -110,8 +110,12 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 
 	void isGrounded(){
-		Vector3 origin = thisRigidbody.transform.position;
-		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
+		Vector3 leftOrigin = thisRigidbody.transform.position;
+		leftOrigin.x -= GetComponent<Collider> ().bounds.size.x/2;
+		Vector3 rightOrigin = thisRigidbody.transform.position;
+		rightOrigin.x += GetComponent<Collider> ().bounds.size.x/2;
+		if (Physics.Raycast (leftOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)
+		    || Physics.Raycast (rightOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
 			if(!grounded)
 				canDash = true;
 			grounded = true;
@@ -185,7 +189,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		//for testing with keyboard
 //		--------------------------------------------------------------------------
 		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile){
+			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * projectileSpeed);
 			}
@@ -196,7 +200,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if (gameController.RightTrigger.WasPressed && hasProjectile){
+			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * projectileSpeed);
 				hasProjectile = false;

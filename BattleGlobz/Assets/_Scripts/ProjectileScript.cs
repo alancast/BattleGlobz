@@ -46,7 +46,7 @@ public class ProjectileScript : MonoBehaviour {
 			break;
 		case "Platform":
 			Vector3 origin = this.transform.position;
-			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)){
+			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
 				GetComponent<Renderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
@@ -59,7 +59,7 @@ public class ProjectileScript : MonoBehaviour {
 	void Update () {
 		// if moving slowly and on the ground, make nuetral
 		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < 2f) {
-			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
+			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
 				GetComponent<Renderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
