@@ -45,7 +45,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				canDash = true;
 	float				dashTime = 0f;
 	float				dashLength = .05f;
-	float 				dashSpeed = 4000;
+	float 				dashSpeed = 4;
 	Vector3				dashForce = Vector3.zero;
 	Vector3				preDashVel = Vector3.zero;
 	//how many hits it takes to die
