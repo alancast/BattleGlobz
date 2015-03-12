@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
+	public float throwAt = 0f;
+	private float throwTimer = .1f;
 
 	void OnTriggerStay(Collider other){
 		if (ownerNum == -1){
@@ -25,8 +27,26 @@ public class ProjectileScript : MonoBehaviour {
 				else if(ownerNum != otherPlayerNum) {
 					other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(ownerNum);
 				}
-				else { // ownerNum == otherPlayerNum
-					//
+				//Ball Collided with the owner
+				else {
+					if(Time.time > throwAt + throwTimer){
+						ownerNum = otherPlayerNum;
+						Destroy(this.gameObject);
+						other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();
+					}
+				}
+				break;
+			case "Shield":
+				print ("Shield collision");
+				otherPlayerNum = other.transform.parent.parent.GetComponent<PlayerControllerScript>().playerNum;
+				GetComponent<Renderer> ().material = other.transform.parent.parent.GetComponent<Renderer> ().material;
+				ownerNum = otherPlayerNum;
+				break;
+			case "Platform":
+				Vector3 origin = this.transform.position;
+				if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)){
+					GetComponent<Renderer> ().material.color = Color.gray;
+					ownerNum = -1;
 				}
 				break;
 			default:

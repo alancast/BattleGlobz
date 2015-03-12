@@ -111,7 +111,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
-		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
+		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
 			if(!grounded)
 				canDash = true;
 			grounded = true;
@@ -239,7 +239,7 @@ public class PlayerControllerScript : MonoBehaviour {
 				shieldEnergy = maxShieldEnergy;
 			}
 		}
-		shield.transform.localScale = new Vector3(0.3f, shieldSize * shieldEnergy/maxShieldEnergy, 1f);
+		shield.transform.localScale = new Vector3(0.7f, shieldSize * shieldEnergy/maxShieldEnergy, 1f);
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
@@ -247,6 +247,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
+		temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
+		temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
 
 	}
 	
