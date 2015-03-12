@@ -56,8 +56,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	void Awake(){
 		instance = this;
 		thisRigidbody = GetComponent<Rigidbody>();
-		gun = transform.GetChild(0).GetChild(0).gameObject;
-		shield = transform.GetChild(1).GetChild(0).gameObject;
+		gun = transform.GetChild(0).gameObject;
+		shield = transform.GetChild(1).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
@@ -111,7 +111,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void isGrounded(){
 		Vector3 origin = thisRigidbody.transform.position;
-		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
+		if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y + .05f)) {
 			if(!grounded)
 				canDash = true;
 			grounded = true;
@@ -239,7 +239,7 @@ public class PlayerControllerScript : MonoBehaviour {
 				shieldEnergy = maxShieldEnergy;
 			}
 		}
-		shield.transform.localScale = new Vector3(0.7f, shieldSize * shieldEnergy/maxShieldEnergy, 1f);
+		shield.transform.localScale = new Vector3(0.3f, shieldSize * shieldEnergy/maxShieldEnergy, 1f);
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
@@ -247,9 +247,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
-		temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-		temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
-
+		print("projected");
 	}
 	
 	//checks if the right stick is pressed over an assigned threshold
