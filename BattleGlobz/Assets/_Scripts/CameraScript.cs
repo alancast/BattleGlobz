@@ -9,15 +9,15 @@ public class CameraScript : MonoBehaviour {
 	float 			levelTime = 30;
 	//text for number of kills and time
 	Text			timeText;
-	Text			zeroKillsText;
-	Text			oneKillsText;
-	Text			twoKillsText;
-	Text			threeKillsText;
+	Text			zeroScoreText;
+	Text			oneScoreText;
+	Text			twoScoreText;
+	Text			threeScoreText;
 	//number of kills for each player
-	int				playerZeroKills = 0;
-	int				playerOneKills = 0;
-	int				playerTwoKills = 0;
-	int				playerThreeKills = 0;
+	int				playerZeroScore = 0;
+	int				playerOneScore = 0;
+	int				playerTwoScore = 0;
+	int				playerThreeScore = 0;
 	//this will be set to true only once
 	bool			timeUp = false;
 	//the person who is the champion at the end of the round
@@ -44,41 +44,41 @@ public class CameraScript : MonoBehaviour {
 	
 	//instantiates the number of kills text for the game screen
 	void instantiateKillText(){
-		GameObject zeroGO = GameObject.Find("ZeroKillsText"); 
+		GameObject zeroGO = GameObject.Find("ZeroScoreText"); 
 		if (!zeroGO) return;
-		zeroKillsText = zeroGO.GetComponent<Text>();
-		zeroKillsText.text = "Player 0: " + playerZeroKills.ToString();
-		GameObject oneGO = GameObject.Find("OneKillsText"); 
+		zeroScoreText = zeroGO.GetComponent<Text>();
+		zeroScoreText.text = "Player 0: " + playerZeroScore.ToString();
+		GameObject oneGO = GameObject.Find("OneScoreText"); 
 		if (!oneGO) return;
-		oneKillsText = oneGO.GetComponent<Text>();
-		oneKillsText.text = "Player 1: " + playerOneKills.ToString();
-		GameObject twoGO = GameObject.Find("TwoKillsText"); 
+		oneScoreText = oneGO.GetComponent<Text>();
+		oneScoreText.text = "Player 1: " + playerOneScore.ToString();
+		GameObject twoGO = GameObject.Find("TwoScoreText"); 
 		if (!twoGO) return;
-		twoKillsText = twoGO.GetComponent<Text>();
-		twoKillsText.text = "Player 2: " + playerTwoKills.ToString();
-		GameObject threeGo = GameObject.Find("ThreeKillsText"); 
+		twoScoreText = twoGO.GetComponent<Text>();
+		twoScoreText.text = "Player 2: " + playerTwoScore.ToString();
+		GameObject threeGo = GameObject.Find("ThreeScoreText"); 
 		if (!threeGo) return;
-		threeKillsText = threeGo.GetComponent<Text>();
-		threeKillsText.text = "Player 3: " + playerThreeKills.ToString();
+		threeScoreText = threeGo.GetComponent<Text>();
+		threeScoreText.text = "Player 3: " + playerThreeScore.ToString();
 	}
 	
-	//adds a kill to the player's kill num
-	public void addKill(int playerNum){
+	//adds int score to the score of the player (playerNum)
+	public void addScore(int playerNum, int score){
 		if (playerNum == 0){
-			playerZeroKills++;
-			zeroKillsText.text = "Player 0: " + playerZeroKills.ToString();
+			playerZeroScore += score;
+			zeroScoreText.text = "Player 0: " + playerZeroScore.ToString();
 		}
 		else if (playerNum == 1){
-			playerOneKills++;
-			oneKillsText.text = "Player 1: " + playerOneKills.ToString();
+			playerOneScore += score;
+			oneScoreText.text = "Player 1: " + playerOneScore.ToString();
 		}
 		else if (playerNum == 2){
-			playerTwoKills++;
-			twoKillsText.text = "Player 2: " + playerTwoKills.ToString();
+			playerTwoScore += score;
+			twoScoreText.text = "Player 2: " + playerTwoScore.ToString();
 		}
 		else if (playerNum == 3){
-			playerThreeKills++;
-			threeKillsText.text = "Player 3: " + playerThreeKills.ToString();
+			playerThreeScore += score;
+			threeScoreText.text = "Player 3: " + playerThreeScore.ToString();
 		}
 	}
 	
@@ -96,36 +96,36 @@ public class CameraScript : MonoBehaviour {
 		bool tied = false;
 		List<int> winners = new List<int>();
 		int championNum = 0;
-		int maxKills = playerZeroKills;
+		int maxScore = playerZeroScore;
 		winners.Add(0);
-		if (playerOneKills > maxKills){
+		if (playerOneScore > maxScore){
 			championNum = 1;
-			maxKills = playerOneKills;
+			maxScore = playerOneScore;
 			winners.Clear();
 			winners.Add(1);
 			tied = false;
 		}
-		else if (playerOneKills == maxKills){
+		else if (playerOneScore == maxScore){
 			winners.Add(1);
 			tied = true;
 		}
-		if (playerTwoKills > maxKills){
+		if (playerTwoScore > maxScore){
 			championNum = 2;
-			maxKills = playerTwoKills;
+			maxScore = playerTwoScore;
 			winners.Clear();
 			winners.Add(2);
 			tied = false;
 		}
-		else if (playerTwoKills == maxKills){
+		else if (playerTwoScore == maxScore){
 			winners.Add(2);
 			tied = true;
 		}
-		if (playerThreeKills > maxKills){
+		if (playerThreeScore > maxScore){
 			tied = false;
 			championNum = 3;
-			maxKills = playerThreeKills;
+			maxScore = playerThreeScore;
 		}
-		else if (playerThreeKills == maxKills){
+		else if (playerThreeScore == maxScore){
 			winners.Add(3);
 			tied = true;
 		}
