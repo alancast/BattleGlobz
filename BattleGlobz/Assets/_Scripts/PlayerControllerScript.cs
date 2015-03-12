@@ -249,7 +249,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 		temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
 		temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
-		print("projected");
 	}
 	
 	//checks if the right stick is pressed over an assigned threshold
