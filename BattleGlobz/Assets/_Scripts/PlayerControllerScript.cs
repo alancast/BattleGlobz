@@ -18,10 +18,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
-	float				xAccel = 40000;
-	float				jumpAccel = 2000;
+	float				xAccel = 10;
+	float				jumpAccel = 2;
 	//maximum speeds (directionless) for horizontal and jumping
-	float 				maxXSpeed = 10;
+	float 				maxXSpeed = 15;
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
@@ -292,7 +292,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		this.transform.position = new Vector3 (-100, -100, 0);
 		timeOfDeath = Time.time;
 		isDead = true;
-		CameraScript.instance.addKill(killerNum);
+		CameraScript.instance.addScore(killerNum,1);
 	}
 
 	void handleRespawn(){
