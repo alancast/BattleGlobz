@@ -292,7 +292,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		this.transform.position = new Vector3 (-100, -100, 0);
 		timeOfDeath = Time.time;
 		isDead = true;
-		ContinuousMovingCameraScript.instance.addKill(killerNum);
+		CameraScript.instance.addKill(killerNum);
 	}
 
 	void handleRespawn(){
