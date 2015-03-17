@@ -3,7 +3,7 @@ using System.Collections;
 
 public class LevelMovementScript : MonoBehaviour {
 	public static bool	stopMoving = false;
-	float 				moveAmount = .01f;
+	float 				moveAmount = .05f;
 
 	void FixedUpdate(){
 		if (stopMoving){

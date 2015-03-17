@@ -136,5 +136,11 @@ public class CameraScript : MonoBehaviour {
 		}
 		champion = championNum;
 		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		foreach(PlayerControllerScript p in players){
+			if(p.playerNum == championNum)
+				Destroy(p.gameObject);
+		}
+		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position);
 	}
 }
