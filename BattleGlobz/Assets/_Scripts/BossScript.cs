@@ -53,7 +53,7 @@ public class BossScript : MonoBehaviour {
 
 	void handleLaser(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
-		if (gameController.RightTrigger.WasPressed && !onCoolDown) {
+		if (gameController.RightTrigger.IsPressed && !onCoolDown && !laserUp) {
 			thisRigidbody.velocity = Vector3.zero;
 			laser.GetComponent<Renderer>().enabled = true;
 			laser.GetComponent<Collider>().enabled = true;
