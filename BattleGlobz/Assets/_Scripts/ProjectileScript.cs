@@ -57,6 +57,13 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (this.transform.position.y <= -50) {
+			Vector3 newPos = Camera.current.transform.position;
+			newPos.z = 0;
+			this.transform.position = newPos;
+			this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			
+		}
 		// if moving slowly and on the ground, make nuetral
 		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < 2f) {
 			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
