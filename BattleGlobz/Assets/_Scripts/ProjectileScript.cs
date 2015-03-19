@@ -16,10 +16,10 @@ public class ProjectileScript : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		switch (other.gameObject.tag) {
 		case "Player":
-			int otherPlayerNum = other.gameObject.GetComponent<PlayerControllerScript>().playerNum;
+			PlayerControllerScript player = other.gameObject.GetComponent<PlayerControllerScript>();
+			int otherPlayerNum = player.playerNum;
 			// picked up by a player
 			if(ownerNum == -1) {
-				print("picked up");
 				ownerNum = otherPlayerNum;
 				Destroy(this.gameObject);
 				other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();

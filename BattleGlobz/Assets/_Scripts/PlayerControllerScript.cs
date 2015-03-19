@@ -37,6 +37,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
 	bool 				hasProjectile = false;
+	GameObject			ballInd;
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
@@ -58,11 +59,14 @@ public class PlayerControllerScript : MonoBehaviour {
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
 		shield = transform.GetChild(1).gameObject;
+		ballInd = transform.GetChild(2).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		shieldSize = shield.transform.lossyScale.y;
+		ballInd.GetComponent<Renderer>().enabled = false;
+
 	}
 	
 	// Update is called once per frame
@@ -95,7 +99,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		if (Time.time > dashTime + dashLength && isDashing) {
 			isDashing = false;
 			if((Mathf.Abs(thisRigidbody.velocity.x) > Mathf.Abs(preDashVel.x + .1f))){
-				print ("pushing back in the X");
 				Vector3 forceVector = Vector3.zero;
 				forceVector.x = -dashForce.x;
 				thisRigidbody.AddForce (forceVector);
@@ -248,6 +251,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	void shootProjectile(Vector3 velocity){
+		ballInd.GetComponent<Renderer>().enabled = false;
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
@@ -307,7 +311,12 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 
 	public void pickUpProjectile(){
+		ballInd.GetComponent<Renderer>().enabled = true;
 		hasProjectile = true;
+	}
+
+	public bool hasBall(){
+		return hasProjectile;
 	}
 }
 	

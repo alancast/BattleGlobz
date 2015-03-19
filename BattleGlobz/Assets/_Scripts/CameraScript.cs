@@ -130,7 +130,8 @@ public class CameraScript : MonoBehaviour {
 			tied = true;
 		}
 		if (tied){
-			int index = (int) Random.Range(0, winners.Count);
+			//I changed this for use with 2 players but we need to change it back
+			int index = (int) Random.Range(0, 1);
 			championNum = winners[index];
 			winners.Clear();
 		}

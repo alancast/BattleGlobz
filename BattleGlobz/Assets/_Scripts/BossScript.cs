@@ -12,6 +12,7 @@ public class BossScript : MonoBehaviour {
 	public GameObject	laserPrefab;
 	GameObject			laser;
 	GameObject			gun;
+	public GameObject			ballPrefab;
 	bool				laserUp = false;
 	bool				onCoolDown;
 	float				coolDownLength = 1f;
@@ -123,6 +124,7 @@ public class BossScript : MonoBehaviour {
 	public void CreateBoss (int bossNum, Vector3 cameraPos){
 		playerNum = bossNum;
 		Vector3 pos = cameraPos;
+		Instantiate (ballPrefab, cameraPos, Quaternion.Euler(Vector3.zero));
 		pos.y += 7;
 		pos.z = 0;
 		this.transform.position = pos;
