@@ -5,7 +5,7 @@ public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
-	private float neutralThresh = 1000f;
+	private float neutralThresh = 1f;
 	private int frameCounter = 0;
 
 
