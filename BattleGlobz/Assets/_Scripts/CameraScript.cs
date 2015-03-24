@@ -23,6 +23,11 @@ public class CameraScript : MonoBehaviour {
 	//the person who is the champion at the end of the round
 	//public because it can be changed by a kill at the end
 	public int 		champion;
+	//audio clips set in inspector
+	public AudioSource	source;
+	public AudioClip	death;
+	public AudioClip	ballThrow;
+	public AudioClip	bossMode;	
 	
 	void Awake(){
 		instance = this;
@@ -31,6 +36,7 @@ public class CameraScript : MonoBehaviour {
 		timeText = timeGO.GetComponent<Text>();
 		timeText.text = "Time left: " + (levelTime - Time.timeSinceLevelLoad).ToString("F2");
 		instantiateKillText();
+		source = GetComponent<AudioSource>();
 	}
 	
 	void FixedUpdate(){

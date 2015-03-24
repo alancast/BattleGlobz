@@ -25,7 +25,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
-	float				projectileSpeed = 40;
+	float				projectileSpeed = 60;
 	//placeholder for time when the ball needs to be fired
 	float				ballFireTime = 10000000000;
 	//amount of time you can hold onto ball for
