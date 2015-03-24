@@ -7,7 +7,7 @@ public class BossScript : MonoBehaviour {
 	//Rigidbody so that only need to call getComponent once
 	public Rigidbody	thisRigidbody;
 	int					playerNum = -1;
-	int					health = 10;
+	int					health = 3;
 	float				speed = 5;
 	GameObject			gun;
 	//what will be shot when fired (set in inspector)

@@ -6,15 +6,19 @@ public class ProjectileScript : MonoBehaviour {
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
 	private float neutralThresh = 1000f;
-	
-	void OnTriggerStay(Collider other){
+	private int frameCounter = 0;
+
+
+	void OnCollisionStay(Collision collision){
 		if (ownerNum == -1){
-			OnTriggerEnter(other);
+			OnCollisionEnter(collision);
 		}
 	}
 	
 	// Use this for initialization
-	void OnTriggerEnter(Collider other){
+	void OnCollisionEnter(Collision collision){
+		Collider other = collision.collider;
+		print ("collision");
 		switch (other.gameObject.tag) {
 		case "Player":
 			PlayerControllerScript player = other.gameObject.GetComponent<PlayerControllerScript>();
@@ -60,6 +64,9 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	
 	void Update () {
+		if(frameCounter++ == 1)
+			this.GetComponent<Collider> ().enabled = true;
+
 		if (this.transform.position.y <= -50) {
 			Vector3 newPos = Camera.current.transform.position;
 			newPos.z = 0;

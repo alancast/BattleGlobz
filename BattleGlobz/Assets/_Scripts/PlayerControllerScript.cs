@@ -25,7 +25,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
-	float				projectileSpeed = 40;
+	float				projectileSpeed = 60;
 	//placeholder for time when the ball needs to be fired
 	float				ballFireTime = 10000000000;
 	//amount of time you can hold onto ball for
@@ -202,6 +202,16 @@ public class PlayerControllerScript : MonoBehaviour {
 			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
 				|| (Time.time > ballFireTime)){
 				Vector3 projectileVelocity = shootAngle();
+				float gunAngle = gun.transform.eulerAngles.z;
+				if(grounded && (gunAngle < 360 && gunAngle > 180)){
+					if(gunAngle < 270)
+						gunAngle = 180;
+					else 
+						gunAngle = 0;
+
+					projectileVelocity.x = Mathf.Cos(gunAngle * Mathf.Deg2Rad);
+					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
+				}
 				shootProjectile(projectileVelocity * projectileSpeed);
 				hasProjectile = false;
 				ballFireTime += 10000;
