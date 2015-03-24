@@ -18,7 +18,6 @@ public class ProjectileScript : MonoBehaviour {
 	// Use this for initialization
 	void OnCollisionEnter(Collision collision){
 		Collider other = collision.collider;
-		print ("collision");
 		switch (other.gameObject.tag) {
 		case "Player":
 			PlayerControllerScript player = other.gameObject.GetComponent<PlayerControllerScript>();
