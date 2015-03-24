@@ -9,15 +9,21 @@ public class BossScript : MonoBehaviour {
 	int					playerNum = -1;
 	int					health = 10;
 	float				speed = 5;
-	public GameObject	laserPrefab;
-	GameObject			laser;
 	GameObject			gun;
 	//what will be shot when fired (set in inspector)
 	public GameObject			projectile;
 	public GameObject			ballPrefab;
-	bool				laserUp = false;
+	bool				isShooting = false;
+	//how long a boss can shoot for
+	float				shootingLength = 1;
+	//when a boss must stop shooting
+	float 				stopShootingTime = 1000000;
+	//how frequently you can shoot
+	float 				shootFrequency = .04f;
+	//when you can shoot the next shot
+	float				nextShotTime = 0;
 	bool				onCoolDown;
-	float				coolDownLength = 1f;
+	float				coolDownLength = 2f;
 	float				coolDownTime = 0f;
 	//speed of the boss bullet when fired
 	float				bossBulletSpeed = 20;
@@ -26,7 +32,6 @@ public class BossScript : MonoBehaviour {
 	void Start () {
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
-		laser = transform.GetChild (1).gameObject;
 	}
 
 	void OnTriggerEnter(Collider other){
@@ -44,36 +49,40 @@ public class BossScript : MonoBehaviour {
 		}
 		if (playerNum == -1)
 			return;
-		if(!laserUp && !onCoolDown)
+		if(!isShooting && !onCoolDown)
 			handleMovement ();
-		handleLaser ();
+		handleShooting();
 		if (Time.time > coolDownTime + coolDownLength){
 			onCoolDown = false;
 		}
 	}
 
-	void handleLaser(){
+	void handleShooting(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
-		if (gameController.RightTrigger.IsPressed && !onCoolDown && !laserUp) {
+		if (gameController.RightTrigger.IsPressed && !onCoolDown && 
+			(!isShooting || Time.time < stopShootingTime)) {
+			if (!isShooting){
+				stopShootingTime = Time.time + shootingLength;
+			}
 			thisRigidbody.velocity = Vector3.zero;
-//			laser.GetComponent<Renderer>().enabled = true;
-//			laser.GetComponent<Collider>().enabled = true;
-//			laserUp = true;
-			Vector3 projectileVelocity = shootAngle();
-			shootProjectile(projectileVelocity * bossBulletSpeed);
+			isShooting = true;
+			if (Time.time > nextShotTime){
+				Vector3 projectileVelocity = shootAngle();
+				shootProjectile(projectileVelocity * bossBulletSpeed);
+				nextShotTime = Time.time + shootFrequency;
+			}
 		}
-		if (gameController.RightTrigger.WasReleased && !onCoolDown) {
+		if ((gameController.RightTrigger.WasReleased && !onCoolDown)
+			|| (Time.time > stopShootingTime && !onCoolDown)) {
 			coolDownTime = Time.time;
 			onCoolDown = true;
-			laserUp = false;
-			laser.GetComponent<Renderer>().enabled = false;
-			laser.GetComponent<Collider>().enabled = false;
+			isShooting = false;
+			stopShootingTime += 100000;
 		}
 
-		if (rightStickPressed() && !laserUp){
+		if (rightStickPressed() && !onCoolDown){
 			float rot = rotationAmount();
 			gun.transform.RotateAround(transform.position, Vector3.forward, rot);
-			laser.transform.RotateAround(transform.position, Vector3.forward, rot);
 		}
 
 	}
