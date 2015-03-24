@@ -59,7 +59,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
 		shield = transform.GetChild(1).gameObject;
-		ballInd = transform.GetChild(2).gameObject;
+		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;

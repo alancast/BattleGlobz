@@ -5,6 +5,7 @@ public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
+	private float neutralThresh = 1000f;
 	
 	void OnTriggerStay(Collider other){
 		if (ownerNum == -1){
@@ -45,11 +46,13 @@ public class ProjectileScript : MonoBehaviour {
 			}
 			break;
 		case "Platform":
+
 			Vector3 origin = this.transform.position;
 			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
 				GetComponent<Renderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
+
 			break;
 		default:
 			break;
@@ -65,8 +68,10 @@ public class ProjectileScript : MonoBehaviour {
 			
 		}
 		// if moving slowly and on the ground, make nuetral
-		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < 2f) {
-			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
+		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < neutralThresh) {
+			print("first if");
+			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .2f)) {
+				print("second if");
 				GetComponent<Renderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
