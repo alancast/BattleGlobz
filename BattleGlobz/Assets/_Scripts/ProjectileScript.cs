@@ -69,9 +69,7 @@ public class ProjectileScript : MonoBehaviour {
 		}
 		// if moving slowly and on the ground, make nuetral
 		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < neutralThresh) {
-			print("first if");
 			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .2f)) {
-				print("second if");
 				GetComponent<Renderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
