@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class CameraScript : MonoBehaviour {
 	static public CameraScript instance;
 	//time of level until it ends
-	float 			levelTime = 3;
+	float 			levelTime = 30;
 	//text for number of kills and time
 	Text			timeText;
 	Text			zeroScoreText;
