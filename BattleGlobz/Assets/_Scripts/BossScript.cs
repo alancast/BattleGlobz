@@ -40,7 +40,6 @@ public class BossScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (health <= 0) {
-			print ("I'm dead");
 			Destroy (this.gameObject);
 		}
 		if (playerNum == -1)
@@ -49,7 +48,6 @@ public class BossScript : MonoBehaviour {
 			handleMovement ();
 		handleLaser ();
 		if (Time.time > coolDownTime + coolDownLength){
-			print ("Resest");
 			onCoolDown = false;
 		}
 	}
