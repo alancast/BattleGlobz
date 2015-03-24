@@ -18,8 +18,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
-	float				xAccel = 10;
-	float				jumpAccel = 2;
+	float				xAccel = 8;
+	float				jumpAccel = 1.8f;
 	//maximum speeds (directionless) for horizontal and jumping
 	float 				maxXSpeed = 15;
 	float 				maxJumpSpeed = 30;
@@ -45,10 +45,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				isDashing = false;
 	bool				canDash = true;
 	float				dashTime = 0f;
-	float				dashLength = .05f;
-	float 				dashSpeed = 4;
+	float				dashLength = .17f;
+	float 				dashSpeed = 2f;
+	float 				dashResistance = -0.4f;
 	Vector3				dashForce = Vector3.zero;
-	Vector3				preDashVel = Vector3.zero;
 	//how many hits it takes to die
 	int					maxHealth = 1;
 	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
@@ -86,11 +86,13 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void handleDash() {
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if (isDashing) {
+			thisRigidbody.AddForce(thisRigidbody.velocity*Time.deltaTime*dashResistance);
+		}
 		if(!isDashing && canDash && !grounded && gameController.RightBumper.WasPressed){
 			isDashing = true;
 			canDash = false;
 			dashTime = Time.time;
-			preDashVel = thisRigidbody.velocity;
 			dashForce = Vector3.zero;
 			dashForce.x = dashSpeed * gameController.LeftStickX;
 			dashForce.y = dashSpeed * gameController.LeftStickY;
@@ -98,16 +100,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 		if (Time.time > dashTime + dashLength && isDashing) {
 			isDashing = false;
-			if((Mathf.Abs(thisRigidbody.velocity.x) > Mathf.Abs(preDashVel.x + .1f))){
-				Vector3 forceVector = Vector3.zero;
-				forceVector.x = -dashForce.x;
-				thisRigidbody.AddForce (forceVector);
-			}
-			if((Mathf.Abs(thisRigidbody.velocity.y) >= Mathf.Abs(preDashVel.y))){
-				Vector3 forceVector = Vector3.zero;
-				forceVector.y = -dashForce.y;
-				thisRigidbody.AddForce (forceVector);
-			}
 		}
 
 	}
