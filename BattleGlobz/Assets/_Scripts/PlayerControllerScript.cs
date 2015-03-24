@@ -26,6 +26,10 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//speed projectile moves at
 	float				projectileSpeed = 40;
+	//placeholder for time when the ball needs to be fired
+	float				ballFireTime = 10000000000;
+	//amount of time you can hold onto ball for
+	float				ballHoldTime = 3;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
@@ -195,10 +199,12 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
+			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
+				|| (Time.time > ballFireTime)){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * projectileSpeed);
 				hasProjectile = false;
+				ballFireTime += 10000;
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
@@ -305,6 +311,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public void pickUpProjectile(){
 		ballInd.GetComponent<Renderer>().enabled = true;
 		hasProjectile = true;
+		ballFireTime = Time.time + ballHoldTime;
 	}
 
 	public bool hasBall(){
