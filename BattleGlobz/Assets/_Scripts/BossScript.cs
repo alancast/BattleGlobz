@@ -139,6 +139,7 @@ public class BossScript : MonoBehaviour {
 		pos.y += 7;
 		pos.z = 0;
 		this.transform.position = pos;
+		CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
 	}
 	
 	Vector3 shootAngle(){
