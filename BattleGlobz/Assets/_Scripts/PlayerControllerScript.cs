@@ -213,7 +213,7 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
 				shootProjectile(projectileVelocity * projectileSpeed);
-				CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
+				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
 				ballFireTime += 10000;
 			}
