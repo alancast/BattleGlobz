@@ -213,6 +213,7 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
 				shootProjectile(projectileVelocity * projectileSpeed);
+				CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
 				ballFireTime += 10000;
 			}
@@ -307,6 +308,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 		currentHealth = maxHealth;
 		this.transform.position = new Vector3 (-100, -100, 0);
+		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
 		isDead = true;
 		CameraScript.instance.addScore(killerNum,1);

@@ -1,13 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Scripts\ProjectileScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/PlayerControllerScript.cs">
     <Files>
-      <File FileName="Assets\_Scripts\ProjectileScript.cs" Line="44" Column="17" />
-      <File FileName="Assets\_Scripts\PlayerControllerScript.cs" Line="216" Column="27" />
-      <File FileName="Assets\_Scripts\BossScript.cs" Line="160" Column="1" />
-      <File FileName="Assets\_Scripts\CameraScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Scripts\LevelMovementScript.cs" Line="1" Column="1" />
-      <File FileName="c:\Users\Connor\Desktop\BattleGlobz\BattleGlobz\BattleGlobz\Assets\InControl\Examples\Basic\CubeController.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/PlayerControllerScript.cs" Line="311" Column="27" />
+      <File FileName="Assets/_Scripts/BossScript.cs" Line="141" Column="33" />
+      <File FileName="Assets/_Scripts/ProjectileScript.cs" Line="84" Column="2" />
+      <File FileName="Assets/_Scripts/CameraScript.cs" Line="9" Column="24" />
+      <File FileName="Assets/_Scripts/BossBulletScript.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/KillZoneScript.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
