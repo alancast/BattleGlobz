@@ -155,6 +155,8 @@
     <Compile Include="Assets\_Scripts\BossScript.cs" />
     <Compile Include="Assets\_Scripts\CameraScript.cs" />
     <Compile Include="Assets\_Scripts\CameraWallScript.cs" />
+    <Compile Include="Assets\_Scripts\FollowCamScript.cs" />
+    <Compile Include="Assets\_Scripts\GravityController.cs" />
     <Compile Include="Assets\_Scripts\KillZoneScript.cs" />
     <Compile Include="Assets\_Scripts\LaserScript.cs" />
     <Compile Include="Assets\_Scripts\LevelMovementScript.cs" />

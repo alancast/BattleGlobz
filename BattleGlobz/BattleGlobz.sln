@@ -23,13 +23,20 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																																		GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																			GlobalSection(MonoDevelopProperties) = preSolution
+=======
+<<<<<<< Updated upstream
+																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> cf9051105eda1c56d39bae65a31cff71ff91071b
 =======
 																																																																																																	GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> Alex
 =======
 																																																																																														GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> Alex
+=======
+																																																																																		GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> Stashed changes
 =======
 																																													GlobalSection(MonoDevelopProperties) = preSolution
 =======
@@ -43,6 +50,9 @@ Global
 																																													GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> Alex
 >>>>>>> AlexBranch
+=======
+																																												GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> Stashed changes
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
