@@ -24,6 +24,8 @@ public class ProjectileScript : MonoBehaviour {
 			int otherPlayerNum = player.playerNum;
 			// picked up by a player
 			if(ownerNum == -1) {
+				if(player.hasBall())
+					return;
 				ownerNum = otherPlayerNum;
 				Destroy(this.gameObject);
 				other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();

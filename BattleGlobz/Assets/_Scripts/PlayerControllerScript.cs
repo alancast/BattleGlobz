@@ -13,7 +13,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	GameObject 		shield;
 	bool 			shieldUp = false;
 	float 			shieldEnergy;
-	float 			maxShieldEnergy = 200f;
+	float 			maxShieldEnergy = 100f;
 	float			shieldSize;
 	//Players gun child object
 	GameObject		gun;
@@ -201,6 +201,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			//fire gun
 			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
 				|| (Time.time > ballFireTime)){
+				print ("Ball Short");
 				Vector3 projectileVelocity = shootAngle();
 				float gunAngle = gun.transform.eulerAngles.z;
 				if(grounded && (gunAngle < 360 && gunAngle > 180)){
