@@ -23,7 +23,7 @@ public class BossScript : MonoBehaviour {
 	//when you can shoot the next shot
 	float				nextShotTime = 0;
 	bool				onCoolDown;
-	float				coolDownLength = 2f;
+	float				coolDownLength = 1f;
 	float				coolDownTime = 0f;
 	//speed of the boss bullet when fired
 	float				bossBulletSpeed = 20;
@@ -36,8 +36,11 @@ public class BossScript : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other){
 		if (other.tag == "Projectile") {
-			print (health);
-			health--;
+			ProjectileScript projectile = other.gameObject.GetComponent<ProjectileScript>();
+			if(projectile.ownerNum != playerNum){
+				print (health);
+				health--;
+			}
 		}
 
 	}
@@ -45,6 +48,7 @@ public class BossScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (health <= 0) {
+			CameraScript.isBoss = false;
 			Destroy (this.gameObject);
 		}
 		if (playerNum == -1)
@@ -135,7 +139,6 @@ public class BossScript : MonoBehaviour {
 	public void CreateBoss (int bossNum, Vector3 cameraPos){
 		playerNum = bossNum;
 		Vector3 pos = cameraPos;
-		Instantiate (ballPrefab, cameraPos, Quaternion.Euler(Vector3.zero));
 		pos.y += 7;
 		pos.z = 0;
 		this.transform.position = pos;
