@@ -68,8 +68,8 @@ public class ProjectileScript : MonoBehaviour {
 		if(frameCounter++ == 1)
 			this.GetComponent<Collider> ().enabled = true;
 
-		if (this.transform.position.y <= -50) {
-			Vector3 newPos = Camera.current.transform.position;
+		if (offScreen()) {
+			Vector3 newPos = CameraScript.instance.transform.position;
 			newPos.z = 0;
 			this.transform.position = newPos;
 			this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
@@ -82,5 +82,29 @@ public class ProjectileScript : MonoBehaviour {
 				ownerNum = -1;
 			}
 		}
+	}
+	
+	//returns true if the ball is off the screen
+	bool offScreen(){
+		//amount off screen allowed before respawn
+		float buffer = 1;
+		//get game objects for left and right
+		Transform left = CameraScript.instance.transform.GetChild(2);
+		Transform right = CameraScript.instance.transform.GetChild(0);
+		Transform top = CameraScript.instance.transform.GetChild(1);
+		Transform bottom = CameraScript.instance.transform.GetChild(3);
+		//check if off screen x
+		if(transform.position.x < left.position.x - buffer || 
+			transform.position.x > right.position.x + buffer){
+			print("ball off screen x");
+			return true;  
+		}
+		//check if off screen y
+		if(transform.position.y < bottom.position.y - (2*buffer) || 
+		   transform.position.y > top.position.y + buffer){
+			print("ball off screen y");
+			return true;  
+		}
+		return false;
 	}
 }

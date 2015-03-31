@@ -37,7 +37,9 @@ public class PlayerControllerScript : MonoBehaviour {
 	public bool			testingWithKeyboard = false;
 	//Handling death and respawning
 	Vector3				respawnPoint;
-	bool				isDead = false;
+	//public so that it can be referenced in camera when
+	//boss mode starts to respawn everyone
+	public bool			isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
 	bool 				hasProjectile = false;
@@ -78,9 +80,12 @@ public class PlayerControllerScript : MonoBehaviour {
 	void Update () {
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-
-		if (isDead && Time.time > timeOfDeath + deathTimer)
+		
+		//respawn if have been dead for long enough and there is not a boss
+		//if there is a boss that will handle the respawns
+		if (isDead && Time.time > timeOfDeath + deathTimer && !CameraScript.isBoss){
 			handleRespawn ();
+		}	
 
 		isGrounded ();
 		handleVelocity();
@@ -112,10 +117,12 @@ public class PlayerControllerScript : MonoBehaviour {
 	void isGrounded(){
 
 		Vector3 leftOrigin = thisRigidbody.transform.position;
-		leftOrigin.x -= GetComponent<Collider> ().bounds.size.x/2;
+		//buffer away from edge
+		float buffer = .05f;
+		leftOrigin.x -= GetComponent<Collider> ().bounds.size.x/2 + buffer;
 
 		Vector3 rightOrigin = thisRigidbody.transform.position;
-		rightOrigin.x += GetComponent<Collider> ().bounds.size.x/2;
+		rightOrigin.x += GetComponent<Collider> ().bounds.size.x/2 - buffer;
 
 		if (Physics.Raycast (leftOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)
 		    || Physics.Raycast (rightOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
@@ -196,7 +203,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		if (testingWithKeyboard){
 			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
-				shootProjectile(projectileVelocity * projectileSpeed);
+				shootProjectile(projectileVelocity * projectileSpeed, false);
 			}
 			// Need to implement for shield
 		}
@@ -207,7 +214,6 @@ public class PlayerControllerScript : MonoBehaviour {
 			//fire gun
 			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
 				|| (Time.time > ballFireTime)){
-				print ("Ball Short");
 				Vector3 projectileVelocity = shootAngle();
 				float gunAngle = gun.transform.eulerAngles.z;
 				if(grounded && (gunAngle < 360 && gunAngle > 180)){
@@ -219,7 +225,16 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.x = Mathf.Cos(gunAngle * Mathf.Deg2Rad);
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
-				shootProjectile(projectileVelocity * projectileSpeed);
+				//ball forced out and neutral
+				if(Time.time > ballFireTime){
+					projectileVelocity.x = (Random.value*2) - 1;
+					projectileVelocity.y = Random.value;
+					shootProjectile(projectileVelocity * projectileSpeed, true);
+				}
+				//ball shot by player
+				else{
+					shootProjectile(projectileVelocity * projectileSpeed, false);
+				}
 				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
 				ballFireTime += 10000;
@@ -266,15 +281,22 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
-	void shootProjectile(Vector3 velocity){
+	//neutral will be true if the ball was force ejected so the projectile should be neutral
+	void shootProjectile(Vector3 velocity, bool neutral){
 		ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
-		temp.GetComponent<Rigidbody>().velocity = velocity;
-		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
-		temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-		temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
-
+		//ball shot by someone
+		if(!neutral){
+			temp.GetComponent<Rigidbody>().velocity = velocity;
+			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
+			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
+			temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+		}
+		//ball force ejected
+		else{
+			temp.GetComponent<Rigidbody>().velocity = velocity;
+		}
 	}
 	
 	//checks if the right stick is pressed over an assigned threshold
@@ -316,6 +338,14 @@ public class PlayerControllerScript : MonoBehaviour {
 			return;
 		}
 		currentHealth = maxHealth;
+		//remove the ball if you have it
+		if (hasProjectile){
+			hasProjectile = false;
+			//remove ball holder
+			ballInd.GetComponent<Renderer>().enabled = false;
+			//put ball in center screen
+			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
+		}
 		this.transform.position = new Vector3 (-100, -100, 0);
 		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
@@ -323,9 +353,20 @@ public class PlayerControllerScript : MonoBehaviour {
 		CameraScript.instance.addScore(killerNum,1);
 	}
 
-	void handleRespawn(){
+	//public so camera can reference on boss respawn
+	public void handleRespawn(){
+		//amount off screen allowed before respawn
+		float buffer = 1;
+		//get game objects for left and right
+		Transform left = CameraScript.instance.transform.GetChild(2);
+		Transform right = CameraScript.instance.transform.GetChild(0);
+		Transform top = CameraScript.instance.transform.GetChild(1);
+		Transform bottom = CameraScript.instance.transform.GetChild(3);
+		Vector3 spawnPosition = Vector3.zero;
+		spawnPosition.x = Random.Range(left.position.x + buffer, right.position.x - buffer);
+		spawnPosition.y = Random.Range(bottom.position.y + buffer, top.position.y - buffer);
+		this.transform.position = spawnPosition;
 		thisRigidbody.velocity = new Vector3(0f,0f,0f);
-		this.transform.position = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		isDead = false;
 	}
 

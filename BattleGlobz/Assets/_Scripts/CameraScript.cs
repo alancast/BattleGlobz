@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour {
 	static public CameraScript instance;
+	//true if there is a boss false if none
+	static public bool			isBoss = false;
 	//time of level until it ends
 	float 			levelTime = 75;
 	//text for number of kills and time
@@ -145,9 +147,19 @@ public class CameraScript : MonoBehaviour {
 		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
 		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
 		foreach(PlayerControllerScript p in players){
-			if(p.playerNum == championNum)
+			//respawn all dead players when the boss is set up
+			if(p.isDead){
+				p.handleRespawn();
+			}
+			//destroy the player and if he/she had a ball respawn one
+			if(p.playerNum == championNum){
+				if(p.hasBall()){
+					Instantiate (p.projectile, transform.position, Quaternion.Euler(Vector3.zero));
+				}
 				Destroy(p.gameObject);
+			}
 		}
+		isBoss = true;
 		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position);
 	}
 }
