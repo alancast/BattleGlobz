@@ -38,6 +38,12 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//handle for animator
 	public Animator     globAnimator;
+	public Animator     arrowAnimator;
+
+	/// <summary>
+	/// //////////////////////temp public material
+	public Material tempMat;
+	/// </summary>
 
 
 	//Handling death and respawning
@@ -105,6 +111,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//function for handleing non triggered animations
 	void handleGlobAnims (){
+		arrowAnimator.SetBool ("hasBall", hasProjectile);
 		globAnimator.SetBool("grounded", grounded);
 		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
 	}
@@ -310,7 +317,9 @@ public class PlayerControllerScript : MonoBehaviour {
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-			//temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+
+			//need to show through animation. stored in publuc variable for now
+			temp.GetComponent<Renderer> ().material = this.tempMat;
 		}
 		//ball force ejected
 		else{
