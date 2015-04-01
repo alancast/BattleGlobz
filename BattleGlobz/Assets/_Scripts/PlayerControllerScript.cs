@@ -71,10 +71,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		gun = transform.GetChild(0).gameObject;
 
 		shield = transform.GetChild(1).gameObject;
-<<<<<<< HEAD
-=======
 
->>>>>>> max
 		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
@@ -110,8 +107,6 @@ public class PlayerControllerScript : MonoBehaviour {
 	void handleGlobAnims (){
 		globAnimator.SetBool("grounded", grounded);
 		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
-		print (grounded);
-		print (thisRigidbody.velocity.x);
 	}
 
 	void handleDash() {
@@ -304,13 +299,9 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
-<<<<<<< HEAD
 	//neutral will be true if the ball was force ejected so the projectile should be neutral
 	void shootProjectile(Vector3 velocity, bool neutral){
-=======
-	void shootProjectile(Vector3 velocity){
 
->>>>>>> max
 		ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
@@ -319,7 +310,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-			temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+			//temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
 		}
 		//ball force ejected
 		else{
