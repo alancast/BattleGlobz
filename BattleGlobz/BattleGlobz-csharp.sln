@@ -23,11 +23,15 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+<<<<<<< HEAD
 																																																																																																																																	GlobalSection(MonoDevelopProperties) = preSolution
 =======
 <<<<<<< Updated upstream
 																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> cf9051105eda1c56d39bae65a31cff71ff91071b
+=======
+																																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> max
 =======
 																																																																																																	GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> Alex

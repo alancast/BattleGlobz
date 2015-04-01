@@ -35,6 +35,11 @@ public class PlayerControllerScript : MonoBehaviour {
 	//set to true if you are testing game with keyboard
 
 	public bool			testingWithKeyboard = false;
+
+	//handle for animator
+	public Animator     globAnimator;
+
+
 	//Handling death and respawning
 	Vector3				respawnPoint;
 	//public so that it can be referenced in camera when
@@ -66,6 +71,10 @@ public class PlayerControllerScript : MonoBehaviour {
 		gun = transform.GetChild(0).gameObject;
 
 		shield = transform.GetChild(1).gameObject;
+<<<<<<< HEAD
+=======
+
+>>>>>>> max
 		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
@@ -78,6 +87,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		handleGlobAnims ();
+
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 		
@@ -92,6 +103,15 @@ public class PlayerControllerScript : MonoBehaviour {
 		handleJumping();
 		handleGunAndShield();
 		handleDash ();
+	}
+
+
+	//function for handleing non triggered animations
+	void handleGlobAnims (){
+		globAnimator.SetBool("grounded", grounded);
+		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
+		print (grounded);
+		print (thisRigidbody.velocity.x);
 	}
 
 	void handleDash() {
@@ -182,6 +202,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.UpArrow)){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					globAnimator.SetTrigger("jump");
 				}
 			}
 		}
@@ -192,6 +213,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					globAnimator.SetTrigger("jump");
 				}
 			}
 		}
@@ -282,8 +304,13 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
+<<<<<<< HEAD
 	//neutral will be true if the ball was force ejected so the projectile should be neutral
 	void shootProjectile(Vector3 velocity, bool neutral){
+=======
+	void shootProjectile(Vector3 velocity){
+
+>>>>>>> max
 		ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));

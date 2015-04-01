@@ -156,7 +156,10 @@
      <Compile Include="Assets\_Scripts\BossScript.cs" />
      <Compile Include="Assets\_Scripts\CameraScript.cs" />
      <Compile Include="Assets\_Scripts\CameraWallScript.cs" />
+<<<<<<< HEAD
      <Compile Include="Assets\_Scripts\CrownScript.cs" />
+=======
+>>>>>>> max
      <Compile Include="Assets\_Scripts\FollowCamScript.cs" />
      <Compile Include="Assets\_Scripts\GravityController.cs" />
      <Compile Include="Assets\_Scripts\KillZoneScript.cs" />
