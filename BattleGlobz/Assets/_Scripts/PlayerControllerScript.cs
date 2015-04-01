@@ -237,8 +237,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
-				|| (Time.time > ballFireTime)){
+			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
 				float gunAngle = gun.transform.eulerAngles.z;
 				if(grounded && (gunAngle < 360 && gunAngle > 180)){
@@ -250,19 +249,17 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.x = Mathf.Cos(gunAngle * Mathf.Deg2Rad);
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
-				//ball forced out and neutral
-				if(Time.time > ballFireTime && hasProjectile){
-					projectileVelocity.x = (Random.value*2) - 1;
-					projectileVelocity.y = Random.value;
-					shootProjectile(projectileVelocity * projectileSpeed, true);
-				}
-				//ball shot by player
-				else if(hasProjectile){
-					shootProjectile(projectileVelocity * projectileSpeed, false);
-				}
+				shootProjectile(projectileVelocity * projectileSpeed, false);
 				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
-				ballFireTime += 10000;
+			}
+			//ball forced out after neutral
+			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
+				Vector3 projectileVelocity = Vector3.zero;
+				projectileVelocity.x = (Random.value*2) - 1;
+				projectileVelocity.y = Random.value;
+				shootProjectile(projectileVelocity * projectileSpeed, true);
+				hasProjectile=false;
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
@@ -320,6 +317,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 			//need to show through animation. stored in publuc variable for now
 			temp.GetComponent<Renderer> ().material = this.tempMat;
+			temp.GetComponent<TrailRenderer>().material = tempMat;
 		}
 		//ball force ejected
 		else{

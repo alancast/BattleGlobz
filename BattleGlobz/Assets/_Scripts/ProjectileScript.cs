@@ -26,11 +26,10 @@ public class ProjectileScript : MonoBehaviour {
 			if(ownerNum == -1) {
 				if(player.hasBall())
 					return;
-				ownerNum = otherPlayerNum;
 				Destroy(this.gameObject);
 				other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();
 			}
-			else if(ownerNum != otherPlayerNum) {
+			else if(ownerNum != otherPlayerNum && !CameraScript.isBoss) {
 				other.gameObject.GetComponent<PlayerControllerScript> ().handleDeath(ownerNum);
 			}
 			//Ball Collided with the owner
@@ -47,6 +46,7 @@ public class ProjectileScript : MonoBehaviour {
 			if(ownerNum != -1){
 				otherPlayerNum = other.transform.parent.GetComponent<PlayerControllerScript>().playerNum;
 				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
+				GetComponent<TrailRenderer>().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
 			}
 			break;
@@ -55,6 +55,7 @@ public class ProjectileScript : MonoBehaviour {
 			Vector3 origin = this.transform.position;
 			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
 				GetComponent<Renderer> ().material.color = Color.gray;
+				GetComponent<TrailRenderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
 
