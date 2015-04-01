@@ -35,7 +35,7 @@ public class ProjectileScript : MonoBehaviour {
 			}
 			//Ball Collided with the owner
 			else {
-				if(Time.time > throwAt + throwTimer){
+				if(Time.time > throwAt + throwTimer && !player.hasBall()){
 					ownerNum = otherPlayerNum;
 					Destroy(this.gameObject);
 					other.gameObject.GetComponent<PlayerControllerScript>().pickUpProjectile();

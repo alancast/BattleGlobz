@@ -146,6 +146,7 @@ public class CameraScript : MonoBehaviour {
 		champion = championNum;
 		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
 		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		Material mat = null;
 		foreach(PlayerControllerScript p in players){
 			//respawn all dead players when the boss is set up
 			if(p.isDead){
@@ -156,10 +157,11 @@ public class CameraScript : MonoBehaviour {
 				if(p.hasBall()){
 					Instantiate (p.projectile, transform.position, Quaternion.Euler(Vector3.zero));
 				}
+				mat = p.GetComponent<Renderer>().material;
 				Destroy(p.gameObject);
 			}
 		}
 		isBoss = true;
-		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position);
+		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position, mat);
 	}
 }

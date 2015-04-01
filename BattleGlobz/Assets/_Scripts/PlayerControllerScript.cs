@@ -99,7 +99,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		if (isDashing) {
 			thisRigidbody.AddForce(thisRigidbody.velocity*Time.deltaTime*dashResistance);
 		}
-		if(!isDashing && canDash && !grounded && gameController.RightBumper.WasPressed){
+		if(!isDashing && canDash && !grounded && (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed)){
+			thisRigidbody.velocity = new Vector3(0,0,0);
 			isDashing = true;
 			canDash = false;
 			dashTime = Time.time;
@@ -188,7 +189,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		//for testing with controller
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
+			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
 				}
@@ -226,13 +227,13 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
 				//ball forced out and neutral
-				if(Time.time > ballFireTime){
+				if(Time.time > ballFireTime && hasProjectile){
 					projectileVelocity.x = (Random.value*2) - 1;
 					projectileVelocity.y = Random.value;
 					shootProjectile(projectileVelocity * projectileSpeed, true);
 				}
 				//ball shot by player
-				else{
+				else if(hasProjectile){
 					shootProjectile(projectileVelocity * projectileSpeed, false);
 				}
 				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);

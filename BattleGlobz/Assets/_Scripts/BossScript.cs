@@ -7,10 +7,13 @@ public class BossScript : MonoBehaviour {
 	//Rigidbody so that only need to call getComponent once
 	public Rigidbody	thisRigidbody;
 	int					playerNum = -1;
+	int					maxHealth = 3;
 	int					health = 3;
-	float				speed = 5;
+	float				speed = 8;
 	GameObject			gun;
+	GameObject			coolDownSphere;
 	//what will be shot when fired (set in inspector)
+	public GameObject			crownPrefab;
 	public GameObject			projectile;
 	public GameObject			ballPrefab;
 	bool				isShooting = false;
@@ -20,18 +23,21 @@ public class BossScript : MonoBehaviour {
 	float 				stopShootingTime = 1000000;
 	//how frequently you can shoot
 	float 				shootFrequency = .04f;
+	float				startShootingTime = 0f;
 	//when you can shoot the next shot
 	float				nextShotTime = 0;
 	bool				onCoolDown;
 	float				coolDownLength = 1f;
 	float				coolDownTime = 0f;
+	float				coolDownRatio = 1.5f;
 	//speed of the boss bullet when fired
-	float				bossBulletSpeed = 20;
+	float				bossBulletSpeed = 30;
 
 	// Use this for initialization
 	void Start () {
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
+		coolDownSphere = transform.GetChild (1).gameObject;
 	}
 
 	void OnTriggerEnter(Collider other){
@@ -49,14 +55,22 @@ public class BossScript : MonoBehaviour {
 	void Update () {
 		if (health <= 0) {
 			CameraScript.isBoss = false;
-			Destroy (this.gameObject);
+			handleBossDeath();
 		}
 		if (playerNum == -1)
 			return;
 		if(!isShooting && !onCoolDown)
 			handleMovement ();
 		handleShooting();
-		if (Time.time > coolDownTime + coolDownLength){
+
+		if (onCoolDown) {
+			float elapsed = coolDownLength - (Time.time - coolDownTime);
+			float ratio = elapsed;
+			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
+		}
+
+		if (Time.time > coolDownTime + coolDownLength && onCoolDown){
+			coolDownSphere.transform.localScale = new Vector3(0f,0f,1.1f);
 			onCoolDown = false;
 		}
 	}
@@ -67,9 +81,15 @@ public class BossScript : MonoBehaviour {
 			(!isShooting || Time.time < stopShootingTime)) {
 			if (!isShooting){
 				stopShootingTime = Time.time + shootingLength;
+				startShootingTime = Time.time;
 			}
 			thisRigidbody.velocity = Vector3.zero;
 			isShooting = true;
+			//Handle coolDownSphere size
+			float elapsed = 1 - (stopShootingTime - Time.time);
+			float ratio = elapsed/shootingLength;
+			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
+
 			if (Time.time > nextShotTime){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * bossBulletSpeed);
@@ -80,6 +100,8 @@ public class BossScript : MonoBehaviour {
 			|| (Time.time > stopShootingTime && !onCoolDown)) {
 			coolDownTime = Time.time;
 			onCoolDown = true;
+			coolDownLength = (Time.time - startShootingTime);
+
 			isShooting = false;
 			stopShootingTime += 100000;
 		}
@@ -136,10 +158,11 @@ public class BossScript : MonoBehaviour {
 		}
 	}
 
-	public void CreateBoss (int bossNum, Vector3 cameraPos){
+	public void CreateBoss (int bossNum, Vector3 cameraPos, Material mat){
 		playerNum = bossNum;
 		Vector3 pos = cameraPos;
-		pos.y += 7;
+		this.GetComponent<Renderer> ().material = mat;
+		pos.y = -2;
 		pos.z = 0;
 		this.transform.position = pos;
 		CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
@@ -159,5 +182,12 @@ public class BossScript : MonoBehaviour {
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<BossBulletScript> ().ownerNum = playerNum;
 		temp.GetComponent<BossBulletScript> ().throwAt = Time.time;
+	}
+
+	void handleBossDeath(){
+		GameObject temp = (GameObject) Instantiate (crownPrefab, transform.position, Quaternion.Euler (Vector3.zero));
+		transform.position = new Vector3 (-100, -100, 0);
+		health = maxHealth;
+		playerNum = -1;
 	}
 }
