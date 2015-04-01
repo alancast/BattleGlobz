@@ -35,6 +35,17 @@ public class PlayerControllerScript : MonoBehaviour {
 	//set to true if you are testing game with keyboard
 
 	public bool			testingWithKeyboard = false;
+
+	//handle for animator
+	public Animator     globAnimator;
+	public Animator     arrowAnimator;
+
+	/// <summary>
+	/// //////////////////////temp public material
+	public Material tempMat;
+	/// </summary>
+
+
 	//Handling death and respawning
 	Vector3				respawnPoint;
 	//public so that it can be referenced in camera when
@@ -52,7 +63,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				canDash = true;
 	float				dashTime = 0f;
 	float				dashLength = .17f;
-	float 				dashSpeed = 2f;
+	float 				dashSpeed = 3f;
 	float 				dashResistance = -0.4f;
 	Vector3				dashForce = Vector3.zero;
 	//how many hits it takes to die
@@ -66,6 +77,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		gun = transform.GetChild(0).gameObject;
 
 		shield = transform.GetChild(1).gameObject;
+
 		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
@@ -78,6 +90,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		handleGlobAnims ();
+
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 		
@@ -92,6 +106,14 @@ public class PlayerControllerScript : MonoBehaviour {
 		handleJumping();
 		handleGunAndShield();
 		handleDash ();
+	}
+
+
+	//function for handleing non triggered animations
+	void handleGlobAnims (){
+		arrowAnimator.SetBool ("hasBall", hasProjectile);
+		globAnimator.SetBool("grounded", grounded);
+		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
 	}
 
 	void handleDash() {
@@ -182,6 +204,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.UpArrow)){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					globAnimator.SetTrigger("jump");
 				}
 			}
 		}
@@ -192,6 +215,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
+					globAnimator.SetTrigger("jump");
 				}
 			}
 		}
@@ -213,8 +237,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
-				|| (Time.time > ballFireTime)){
+			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
 				float gunAngle = gun.transform.eulerAngles.z;
 				if(grounded && (gunAngle < 360 && gunAngle > 180)){
@@ -226,19 +249,17 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.x = Mathf.Cos(gunAngle * Mathf.Deg2Rad);
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
-				//ball forced out and neutral
-				if(Time.time > ballFireTime && hasProjectile){
-					projectileVelocity.x = (Random.value*2) - 1;
-					projectileVelocity.y = Random.value;
-					shootProjectile(projectileVelocity * projectileSpeed, true);
-				}
-				//ball shot by player
-				else if(hasProjectile){
-					shootProjectile(projectileVelocity * projectileSpeed, false);
-				}
+				shootProjectile(projectileVelocity * projectileSpeed, false);
 				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
-				ballFireTime += 10000;
+			}
+			//ball forced out after neutral
+			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
+				Vector3 projectileVelocity = Vector3.zero;
+				projectileVelocity.x = (Random.value*2) - 1;
+				projectileVelocity.y = Random.value;
+				shootProjectile(projectileVelocity * projectileSpeed, true);
+				hasProjectile=false;
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
@@ -284,6 +305,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	//neutral will be true if the ball was force ejected so the projectile should be neutral
 	void shootProjectile(Vector3 velocity, bool neutral){
+
 		ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
@@ -292,7 +314,10 @@ public class PlayerControllerScript : MonoBehaviour {
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-			temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+
+			//need to show through animation. stored in publuc variable for now
+			temp.GetComponent<Renderer> ().material = this.tempMat;
+			temp.GetComponent<TrailRenderer>().material = tempMat;
 		}
 		//ball force ejected
 		else{
