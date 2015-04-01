@@ -46,7 +46,7 @@ public class ProjectileScript : MonoBehaviour {
 			//This will make sure that you can't push a live ball across the floor
 			if(ownerNum != -1){
 				otherPlayerNum = other.transform.parent.GetComponent<PlayerControllerScript>().playerNum;
-				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<Renderer> ().material;
+				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
 			}
 			break;

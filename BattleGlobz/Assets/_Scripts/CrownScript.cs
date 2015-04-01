@@ -8,7 +8,7 @@ public class CrownScript : MonoBehaviour {
 		if (other.gameObject.tag == "Player") {
 			CameraScript.isBoss = true;
 			Material mat = null;
-			mat = other.gameObject.GetComponent<Renderer>().material;
+			mat = other.gameObject.GetComponent<PlayerControllerScript>().tempMat;
 			int num = other.gameObject.GetComponent<PlayerControllerScript> ().playerNum;
 			FindObjectOfType<BossScript> ().CreateBoss (num, transform.position, mat);
 			Destroy(other.gameObject);

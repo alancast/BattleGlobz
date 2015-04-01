@@ -167,7 +167,7 @@ public class CameraScript : MonoBehaviour {
 				if(p.hasBall()){
 					Instantiate (p.projectile, transform.position, Quaternion.Euler(Vector3.zero));
 				}
-				mat = p.GetComponent<Renderer>().material;
+				mat = p.tempMat;
 				Destroy(p.gameObject);
 			}
 		}
