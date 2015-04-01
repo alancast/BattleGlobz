@@ -151,8 +151,15 @@
     <Compile Include="Assets\InControl\Source\XInput\XInputDotNetPure\GamePad.cs" />
     <Compile Include="Assets\InControl\Source\XInput\XInputDotNetPure\Utils.cs" />
     <Compile Include="Assets\InControl\Test\TestInputManager.cs" />
+    <Compile Include="Assets\_Scripts\BossBulletScript.cs" />
+    <Compile Include="Assets\_Scripts\BossScript.cs" />
     <Compile Include="Assets\_Scripts\CameraScript.cs" />
     <Compile Include="Assets\_Scripts\CameraWallScript.cs" />
+    <Compile Include="Assets\_Scripts\CrownScript.cs" />
+    <Compile Include="Assets\_Scripts\FollowCamScript.cs" />
+    <Compile Include="Assets\_Scripts\GravityController.cs" />
+    <Compile Include="Assets\_Scripts\KillZoneScript.cs" />
+    <Compile Include="Assets\_Scripts\LaserScript.cs" />
     <Compile Include="Assets\_Scripts\LevelMovementScript.cs" />
     <Compile Include="Assets\_Scripts\PlayerControllerScript.cs" />
     <Compile Include="Assets\_Scripts\ProjectileScript.cs" />

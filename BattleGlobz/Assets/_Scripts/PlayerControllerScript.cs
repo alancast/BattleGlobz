@@ -13,19 +13,23 @@ public class PlayerControllerScript : MonoBehaviour {
 	GameObject 		shield;
 	bool 			shieldUp = false;
 	float 			shieldEnergy;
-	float 			maxShieldEnergy = 200f;
+	float 			maxShieldEnergy = 100f;
 	float			shieldSize;
 	//Players gun child object
 	GameObject		gun;
 	//accelerations for horizontal movement and jumping
-	float				xAccel = 10;
-	float				jumpAccel = 2;
+	float				xAccel = 8;
+	float				jumpAccel = 1.8f;
 	//maximum speeds (directionless) for horizontal and jumping
 	float 				maxXSpeed = 15;
 	float 				maxJumpSpeed = 30;
 
 	//speed projectile moves at
-	float				projectileSpeed = 40;
+	float				projectileSpeed = 60;
+	//placeholder for time when the ball needs to be fired
+	float				ballFireTime = 10000000000;
+	//amount of time you can hold onto ball for
+	float				ballHoldTime = 3;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	//set to true if you are testing game with keyboard
@@ -33,10 +37,13 @@ public class PlayerControllerScript : MonoBehaviour {
 	public bool			testingWithKeyboard = false;
 	//Handling death and respawning
 	Vector3				respawnPoint;
-	bool				isDead = false;
+	//public so that it can be referenced in camera when
+	//boss mode starts to respawn everyone
+	public bool			isDead = false;
 	float				timeOfDeath = 0f;
 	float				deathTimer = 1f;
 	bool 				hasProjectile = false;
+	GameObject			ballInd;
 	
 	//tells whether the player is on the ground or not. set in isGrounded() called on update
 	bool				grounded = true;
@@ -44,10 +51,10 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool				isDashing = false;
 	bool				canDash = true;
 	float				dashTime = 0f;
-	float				dashLength = .05f;
-	float 				dashSpeed = 4;
+	float				dashLength = .17f;
+	float 				dashSpeed = 2f;
+	float 				dashResistance = -0.4f;
 	Vector3				dashForce = Vector3.zero;
-	Vector3				preDashVel = Vector3.zero;
 	//how many hits it takes to die
 	int					maxHealth = 1;
 	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
@@ -57,21 +64,28 @@ public class PlayerControllerScript : MonoBehaviour {
 		instance = this;
 		thisRigidbody = GetComponent<Rigidbody>();
 		gun = transform.GetChild(0).gameObject;
+
 		shield = transform.GetChild(1).gameObject;
+		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		shieldSize = shield.transform.lossyScale.y;
+		ballInd.GetComponent<Renderer>().enabled = false;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-
-		if (isDead && Time.time > timeOfDeath + deathTimer)
+		
+		//respawn if have been dead for long enough and there is not a boss
+		//if there is a boss that will handle the respawns
+		if (isDead && Time.time > timeOfDeath + deathTimer && !CameraScript.isBoss){
 			handleRespawn ();
+		}	
 
 		isGrounded ();
 		handleVelocity();
@@ -82,11 +96,14 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	void handleDash() {
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-		if(!isDashing && canDash && !grounded && gameController.RightBumper.WasPressed){
+		if (isDashing) {
+			thisRigidbody.AddForce(thisRigidbody.velocity*Time.deltaTime*dashResistance);
+		}
+		if(!isDashing && canDash && !grounded && (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed)){
+			thisRigidbody.velocity = new Vector3(0,0,0);
 			isDashing = true;
 			canDash = false;
 			dashTime = Time.time;
-			preDashVel = thisRigidbody.velocity;
 			dashForce = Vector3.zero;
 			dashForce.x = dashSpeed * gameController.LeftStickX;
 			dashForce.y = dashSpeed * gameController.LeftStickY;
@@ -94,30 +111,26 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 		if (Time.time > dashTime + dashLength && isDashing) {
 			isDashing = false;
-			if((Mathf.Abs(thisRigidbody.velocity.x) > Mathf.Abs(preDashVel.x + .1f))){
-				print ("pushing back in the X");
-				Vector3 forceVector = Vector3.zero;
-				forceVector.x = -dashForce.x;
-				thisRigidbody.AddForce (forceVector);
-			}
-			if((Mathf.Abs(thisRigidbody.velocity.y) >= Mathf.Abs(preDashVel.y))){
-				Vector3 forceVector = Vector3.zero;
-				forceVector.y = -dashForce.y;
-				thisRigidbody.AddForce (forceVector);
-			}
 		}
 
 	}
 
 	void isGrounded(){
+
 		Vector3 leftOrigin = thisRigidbody.transform.position;
-		leftOrigin.x -= GetComponent<Collider> ().bounds.size.x/2;
+		//buffer away from edge
+		float buffer = .05f;
+		leftOrigin.x -= GetComponent<Collider> ().bounds.size.x/2 + buffer;
+
 		Vector3 rightOrigin = thisRigidbody.transform.position;
-		rightOrigin.x += GetComponent<Collider> ().bounds.size.x/2;
+		rightOrigin.x += GetComponent<Collider> ().bounds.size.x/2 - buffer;
+
 		if (Physics.Raycast (leftOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)
 		    || Physics.Raycast (rightOrigin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .05f)) {
+
 			if(!grounded)
 				canDash = true;
+
 			grounded = true;
 		}
 		else
@@ -176,7 +189,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		//for testing with controller
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.RightBumper.WasPressed || gameController.LeftBumper.WasPressed){
+			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
 				}
@@ -191,7 +204,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		if (testingWithKeyboard){
 			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
-				shootProjectile(projectileVelocity * projectileSpeed);
+				shootProjectile(projectileVelocity * projectileSpeed, false);
 			}
 			// Need to implement for shield
 		}
@@ -200,10 +213,32 @@ public class PlayerControllerScript : MonoBehaviour {
 		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
+			if ((gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp)
+				|| (Time.time > ballFireTime)){
 				Vector3 projectileVelocity = shootAngle();
-				shootProjectile(projectileVelocity * projectileSpeed);
+				float gunAngle = gun.transform.eulerAngles.z;
+				if(grounded && (gunAngle < 360 && gunAngle > 180)){
+					if(gunAngle < 270)
+						gunAngle = 180;
+					else 
+						gunAngle = 0;
+
+					projectileVelocity.x = Mathf.Cos(gunAngle * Mathf.Deg2Rad);
+					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
+				}
+				//ball forced out and neutral
+				if(Time.time > ballFireTime && hasProjectile){
+					projectileVelocity.x = (Random.value*2) - 1;
+					projectileVelocity.y = Random.value;
+					shootProjectile(projectileVelocity * projectileSpeed, true);
+				}
+				//ball shot by player
+				else if(hasProjectile){
+					shootProjectile(projectileVelocity * projectileSpeed, false);
+				}
+				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
+				ballFireTime += 10000;
 			}
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
@@ -247,12 +282,22 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
-	void shootProjectile(Vector3 velocity){
+	//neutral will be true if the ball was force ejected so the projectile should be neutral
+	void shootProjectile(Vector3 velocity, bool neutral){
+		ballInd.GetComponent<Renderer>().enabled = false;
+
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
-		temp.GetComponent<Rigidbody>().velocity = velocity;
-		temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
-		temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
-		temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+		//ball shot by someone
+		if(!neutral){
+			temp.GetComponent<Rigidbody>().velocity = velocity;
+			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
+			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
+			temp.GetComponent<Renderer> ().material = this.GetComponent<Renderer> ().material;
+		}
+		//ball force ejected
+		else{
+			temp.GetComponent<Rigidbody>().velocity = velocity;
+		}
 	}
 	
 	//checks if the right stick is pressed over an assigned threshold
@@ -294,20 +339,46 @@ public class PlayerControllerScript : MonoBehaviour {
 			return;
 		}
 		currentHealth = maxHealth;
+		//remove the ball if you have it
+		if (hasProjectile){
+			hasProjectile = false;
+			//remove ball holder
+			ballInd.GetComponent<Renderer>().enabled = false;
+			//put ball in center screen
+			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
+		}
 		this.transform.position = new Vector3 (-100, -100, 0);
+		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
 		isDead = true;
 		CameraScript.instance.addScore(killerNum,1);
 	}
 
-	void handleRespawn(){
+	//public so camera can reference on boss respawn
+	public void handleRespawn(){
+		//amount off screen allowed before respawn
+		float buffer = 1;
+		//get game objects for left and right
+		Transform left = CameraScript.instance.transform.GetChild(2);
+		Transform right = CameraScript.instance.transform.GetChild(0);
+		Transform top = CameraScript.instance.transform.GetChild(1);
+		Transform bottom = CameraScript.instance.transform.GetChild(3);
+		Vector3 spawnPosition = Vector3.zero;
+		spawnPosition.x = Random.Range(left.position.x + buffer, right.position.x - buffer);
+		spawnPosition.y = Random.Range(bottom.position.y + buffer, top.position.y - buffer);
+		this.transform.position = spawnPosition;
 		thisRigidbody.velocity = new Vector3(0f,0f,0f);
-		this.transform.position = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		isDead = false;
 	}
 
 	public void pickUpProjectile(){
+		ballInd.GetComponent<Renderer>().enabled = true;
 		hasProjectile = true;
+		ballFireTime = Time.time + ballHoldTime;
+	}
+
+	public bool hasBall(){
+		return hasProjectile;
 	}
 }
 	

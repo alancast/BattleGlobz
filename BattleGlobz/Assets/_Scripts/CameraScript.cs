@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour {
 	static public CameraScript instance;
+	//true if there is a boss false if none
+	static public bool			isBoss = false;
 	//time of level until it ends
-	float 			levelTime = 30;
+	float 			levelTime = 75;
 	//text for number of kills and time
 	Text			timeText;
 	Text			zeroScoreText;
@@ -23,6 +25,11 @@ public class CameraScript : MonoBehaviour {
 	//the person who is the champion at the end of the round
 	//public because it can be changed by a kill at the end
 	public int 		champion;
+	//audio clips set in inspector
+	public AudioSource	source;
+	public AudioClip	death;
+	public AudioClip	ballThrow;
+	public AudioClip	bossMode;	
 	
 	void Awake(){
 		instance = this;
@@ -31,6 +38,7 @@ public class CameraScript : MonoBehaviour {
 		timeText = timeGO.GetComponent<Text>();
 		timeText.text = "Time left: " + (levelTime - Time.timeSinceLevelLoad).ToString("F2");
 		instantiateKillText();
+		source = GetComponent<AudioSource>();
 	}
 	
 	void FixedUpdate(){
@@ -130,11 +138,30 @@ public class CameraScript : MonoBehaviour {
 			tied = true;
 		}
 		if (tied){
-			int index = (int) Random.Range(0, winners.Count);
+			//I changed this for use with 2 players but we need to change it back
+			int index = (int) Random.Range(0, 1);
 			championNum = winners[index];
 			winners.Clear();
 		}
 		champion = championNum;
 		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		Material mat = null;
+		foreach(PlayerControllerScript p in players){
+			//respawn all dead players when the boss is set up
+			if(p.isDead){
+				p.handleRespawn();
+			}
+			//destroy the player and if he/she had a ball respawn one
+			if(p.playerNum == championNum){
+				if(p.hasBall()){
+					Instantiate (p.projectile, transform.position, Quaternion.Euler(Vector3.zero));
+				}
+				mat = p.GetComponent<Renderer>().material;
+				Destroy(p.gameObject);
+			}
+		}
+		isBoss = true;
+		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position, mat);
 	}
 }
