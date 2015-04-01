@@ -47,7 +47,7 @@ public class BossScript : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		if (other.tag == "Projectile") {
 			ProjectileScript projectile = other.gameObject.GetComponent<ProjectileScript>();
-			if(projectile.ownerNum != playerNum){
+			if(projectile.ownerNum != playerNum && projectile.ownerNum != -1){
 				health--;
 			}
 		}
@@ -82,7 +82,8 @@ public class BossScript : MonoBehaviour {
 		}
 		
 		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
-			Application.LoadLevel("_Scene_Menu");
+//			Application.LoadLevel("_Scene_Menu");
+			CameraScript.instance.timeText.text = "Refresh browser to play again";
 		}
 	}
 
