@@ -162,6 +162,7 @@
      <Compile Include="Assets\_Scripts\KillZoneScript.cs" />
      <Compile Include="Assets\_Scripts\LaserScript.cs" />
      <Compile Include="Assets\_Scripts\LevelMovementScript.cs" />
+     <Compile Include="Assets\_Scripts\MenuScript.cs" />
      <Compile Include="Assets\_Scripts\PlayerControllerScript.cs" />
      <Compile Include="Assets\_Scripts\ProjectileScript.cs" />
      <None Include="Assets\InControl\README\README.txt" />
