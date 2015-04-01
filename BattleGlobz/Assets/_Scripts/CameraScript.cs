@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour {
 	//true if there is a boss false if none
 	static public bool			isBoss = false;
 	//time of level until it ends
-	float 			levelTime = 5;
+	float 			levelTime = 75;
 	//text for number of kills and time
 	//public so that it can be set from BossScript when game ends
 	public Text		timeText;
