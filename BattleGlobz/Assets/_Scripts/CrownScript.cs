@@ -6,6 +6,7 @@ public class CrownScript : MonoBehaviour {
 	void OnCollisionEnter(Collision collision){
 		Collider other = collision.collider;
 		if (other.gameObject.tag == "Player") {
+			CameraScript.isBoss = true;
 			Material mat = null;
 			mat = other.gameObject.GetComponent<Renderer>().material;
 			int num = other.gameObject.GetComponent<PlayerControllerScript> ().playerNum;

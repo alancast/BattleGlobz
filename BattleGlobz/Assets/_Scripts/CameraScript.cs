@@ -10,7 +10,8 @@ public class CameraScript : MonoBehaviour {
 	//time of level until it ends
 	float 			levelTime = 75;
 	//text for number of kills and time
-	Text			timeText;
+	//public so that it can be set from BossScript when game ends
+	public Text		timeText;
 	Text			zeroScoreText;
 	Text			oneScoreText;
 	Text			twoScoreText;
@@ -25,11 +26,17 @@ public class CameraScript : MonoBehaviour {
 	//the person who is the champion at the end of the round
 	//public because it can be changed by a kill at the end
 	public int 		champion;
+	//how many players are left in the game
+	static public int 	playerCount;
+	//how many players are still alive in the boss mode
+	//decremented in handle death if in boss mode
+	//reset to playercount if boss dies
+	static public int	playerCountAlive;
 	//audio clips set in inspector
 	public AudioSource	source;
 	public AudioClip	death;
 	public AudioClip	ballThrow;
-	public AudioClip	bossMode;	
+	public AudioClip	bossMode;
 	
 	void Awake(){
 		instance = this;
@@ -39,6 +46,8 @@ public class CameraScript : MonoBehaviour {
 		timeText.text = "Time left: " + (levelTime - Time.timeSinceLevelLoad).ToString("F2");
 		instantiateKillText();
 		source = GetComponent<AudioSource>();
+		playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
+		playerCountAlive = playerCount;
 	}
 	
 	void FixedUpdate(){
@@ -139,12 +148,13 @@ public class CameraScript : MonoBehaviour {
 		}
 		if (tied){
 			//I changed this for use with 2 players but we need to change it back
-			int index = (int) Random.Range(0, 1);
+			int index = (int) Random.Range(0, winners.Count);
 			championNum = winners[index];
 			winners.Clear();
 		}
 		champion = championNum;
-		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
+//		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
+		timeText.text = "";
 		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
 		Material mat = null;
 		foreach(PlayerControllerScript p in players){
@@ -162,6 +172,8 @@ public class CameraScript : MonoBehaviour {
 			}
 		}
 		isBoss = true;
+		playerCount--;
+		playerCountAlive--;
 		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position, mat);
 	}
 }

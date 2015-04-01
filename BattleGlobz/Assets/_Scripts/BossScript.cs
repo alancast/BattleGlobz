@@ -32,6 +32,10 @@ public class BossScript : MonoBehaviour {
 	float				coolDownRatio = 1.5f;
 	//speed of the boss bullet when fired
 	float				bossBulletSpeed = 30;
+	//the menu screen will load when this is over
+	float				endGameTime = 100000000;
+	//how long the game will pause after there is a winner
+	float				endGamePause = 5;
 
 	// Use this for initialization
 	void Start () {
@@ -43,8 +47,7 @@ public class BossScript : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		if (other.tag == "Projectile") {
 			ProjectileScript projectile = other.gameObject.GetComponent<ProjectileScript>();
-			if(projectile.ownerNum != playerNum){
-				print (health);
+			if(projectile.ownerNum != playerNum && projectile.ownerNum != -1){
 				health--;
 			}
 		}
@@ -54,7 +57,6 @@ public class BossScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (health <= 0) {
-			CameraScript.isBoss = false;
 			handleBossDeath();
 		}
 		if (playerNum == -1)
@@ -72,6 +74,16 @@ public class BossScript : MonoBehaviour {
 		if (Time.time > coolDownTime + coolDownLength && onCoolDown){
 			coolDownSphere.transform.localScale = new Vector3(0f,0f,1.1f);
 			onCoolDown = false;
+		}
+		
+		if (CameraScript.playerCountAlive == 0 && Time.timeSinceLevelLoad < endGameTime){
+			CameraScript.instance.timeText.text = "Champion is Player" + playerNum.ToString() + "!!!";
+			endGameTime = Time.timeSinceLevelLoad;
+		}
+		
+		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
+//			Application.LoadLevel("_Scene_Menu");
+			CameraScript.instance.timeText.text = "Refresh browser to play again";
 		}
 	}
 
@@ -165,7 +177,7 @@ public class BossScript : MonoBehaviour {
 		pos.y = -2;
 		pos.z = 0;
 		this.transform.position = pos;
-		CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
+		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
 	}
 	
 	Vector3 shootAngle(){
@@ -185,9 +197,13 @@ public class BossScript : MonoBehaviour {
 	}
 
 	void handleBossDeath(){
+		CameraScript.isBoss = false;
 		GameObject temp = (GameObject) Instantiate (crownPrefab, transform.position, Quaternion.Euler (Vector3.zero));
 		transform.position = new Vector3 (-100, -100, 0);
 		health = maxHealth;
 		playerNum = -1;
+		//decrement number of players in game because whoever was boss is out of the game
+		CameraScript.playerCount--;
+		CameraScript.playerCountAlive = CameraScript.playerCount;
 	}
 }

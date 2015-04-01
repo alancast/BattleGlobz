@@ -348,9 +348,13 @@ public class PlayerControllerScript : MonoBehaviour {
 			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
 		}
 		this.transform.position = new Vector3 (-100, -100, 0);
-		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
+		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
 		isDead = true;
+		//if died while boss decrement the player count alive
+		if (CameraScript.isBoss){
+			CameraScript.playerCountAlive--;
+		}
 		CameraScript.instance.addScore(killerNum,1);
 	}
 
