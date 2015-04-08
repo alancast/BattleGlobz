@@ -7,6 +7,7 @@ public class ProjectileScript : MonoBehaviour {
 	private float throwTimer = .1f;
 	private float neutralThresh = 1f;
 	private int frameCounter = 0;
+	public bool neutralOnBounce;
 
 
 	void OnCollisionStay(Collision collision){
@@ -53,7 +54,8 @@ public class ProjectileScript : MonoBehaviour {
 		case "Platform":
 
 			Vector3 origin = this.transform.position;
-			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
+			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)
+			    && neutralOnBounce){
 				GetComponent<Renderer> ().material.color = Color.gray;
 				GetComponent<TrailRenderer> ().material.color = Color.gray;
 				ownerNum = -1;
