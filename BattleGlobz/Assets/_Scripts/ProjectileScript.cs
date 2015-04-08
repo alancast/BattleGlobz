@@ -5,8 +5,9 @@ public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
-	private float neutralThresh = 1f;
+	private float neutralThresh = 1000f;
 	private int frameCounter = 0;
+	private bool hasBounced = false;
 	public bool neutralOnBounce;
 
 
@@ -54,11 +55,13 @@ public class ProjectileScript : MonoBehaviour {
 		case "Platform":
 
 			Vector3 origin = this.transform.position;
-			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)
-			    && neutralOnBounce){
-				GetComponent<Renderer> ().material.color = Color.gray;
-				GetComponent<TrailRenderer> ().material.color = Color.gray;
-				ownerNum = -1;
+			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
+				hasBounced = true;
+				if(neutralOnBounce){
+					GetComponent<Renderer> ().material.color = Color.gray;
+					GetComponent<TrailRenderer> ().material.color = Color.gray;
+					ownerNum = -1;
+				}
 			}
 
 			break;
@@ -80,8 +83,9 @@ public class ProjectileScript : MonoBehaviour {
 		}
 		// if moving slowly and on the ground, make nuetral
 		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < neutralThresh) {
-			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .2f)) {
+			if(hasBounced){
 				GetComponent<Renderer> ().material.color = Color.gray;
+				GetComponent<TrailRenderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
 		}
