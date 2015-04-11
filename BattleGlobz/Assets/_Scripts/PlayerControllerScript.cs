@@ -32,9 +32,6 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				ballHoldTime = 3;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
-	//set to true if you are testing game with keyboard
-
-	public bool			testingWithKeyboard = false;
 
 	//handle for animator
 	public Animator     globAnimator;
@@ -161,80 +158,36 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//controls the players velocity every update
 	void handleVelocity(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKey(KeyCode.LeftArrow)){
-				if (thisRigidbody.velocity.x > -maxXSpeed){
-					thisRigidbody.AddForce(Vector3.left*xAccel*Time.deltaTime);
-				}
-			}
-			if (Input.GetKey(KeyCode.RightArrow)){
-				if (thisRigidbody.velocity.x < maxXSpeed){
-					thisRigidbody.AddForce(Vector3.right*xAccel*Time.deltaTime);
-				}
+		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if (gameController.LeftStick.Left){
+			if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
+				Vector3 forceVector = Vector3.zero;
+				forceVector.x = gameController.LeftStickX;
+				thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 			}
 		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
-			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.LeftStick.Left){
-				if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
-					Vector3 forceVector = Vector3.zero;
-					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
-				}
-			}
-			if (gameController.LeftStick.Right){
-				if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
-					Vector3 forceVector = Vector3.zero;
-					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
-				}
+		if (gameController.LeftStick.Right){
+			if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
+				Vector3 forceVector = Vector3.zero;
+				forceVector.x = gameController.LeftStickX;
+				thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 			}
 		}
 	}
 	
 	//controls the players jumping every update
 	void handleJumping(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.UpArrow)){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
-				}
-			}
-		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
-			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
-				}
+		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
+			if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
+				thisRigidbody.AddForce(Vector3.up*jumpAccel);
+				globAnimator.SetTrigger("jump");
 			}
 		}
 	}
 		
 	//handles the gun and shield every update, rotation and shooting
 	void handleGunAndShield(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile && !shieldUp){
-				Vector3 projectileVelocity = shootAngle();
-				shootProjectile(projectileVelocity * projectileSpeed, false);
-			}
-			// Need to implement for shield
-		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
 			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
@@ -280,7 +233,6 @@ public class PlayerControllerScript : MonoBehaviour {
 				gun.transform.RotateAround(transform.position, Vector3.forward, rot);
 				shield.transform.RotateAround(transform.position, Vector3.forward, rot);
 			}
-		}
 
 		// Update shield energy and size
 		//smaller numbers = slower charge
