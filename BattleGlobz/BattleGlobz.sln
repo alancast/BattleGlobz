@@ -24,9 +24,12 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 																																																																																																																																																	GlobalSection(MonoDevelopProperties) = preSolution
+<<<<<<< HEAD
 =======
 																																																																																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> Stashed changes
+=======
+>>>>>>> origin/dev
 =======
 <<<<<<< Updated upstream
 																																																																																																GlobalSection(MonoDevelopProperties) = preSolution

@@ -59,19 +59,29 @@ public class BossScript : MonoBehaviour {
 		if (health <= 0) {
 			handleBossDeath();
 		}
-		if (playerNum == -1)
+		if (playerNum == -1){
 			return;
-		if(!isShooting && !onCoolDown)
+		}
+		//to stop shooting without releasing the trigger
+		if(Time.timeSinceLevelLoad > stopShootingTime && !onCoolDown){
+			coolDownTime = Time.time;
+			onCoolDown = true;
+			coolDownLength = (Time.time - startShootingTime);
+			isShooting = false;
+			stopShootingTime += 100000;
+			Vector3 vel = thisRigidbody.velocity;
+			vel.x = 0;
+			thisRigidbody.velocity = vel;
+		}
+		if((!isShooting || Time.timeSinceLevelLoad < stopShootingTime) && !onCoolDown){
 			handleMovement ();
-		handleShooting();
-
+			handleShooting();
+		}
 		if (onCoolDown) {
-			float elapsed = coolDownLength - (Time.time - coolDownTime);
-			float ratio = elapsed;
+			float ratio = coolDownLength - (Time.timeSinceLevelLoad - coolDownTime);
 			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
 		}
-
-		if (Time.time > coolDownTime + coolDownLength && onCoolDown){
+		if (Time.timeSinceLevelLoad > coolDownTime + coolDownLength && onCoolDown){
 			coolDownSphere.transform.localScale = new Vector3(0f,0f,1.1f);
 			onCoolDown = false;
 		}
@@ -89,8 +99,7 @@ public class BossScript : MonoBehaviour {
 
 	void handleShooting(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
-		if (gameController.RightTrigger.IsPressed && !onCoolDown && 
-			(!isShooting || Time.time < stopShootingTime)) {
+		if (gameController.RightTrigger.IsPressed) {
 			if (!isShooting){
 				stopShootingTime = Time.time + shootingLength;
 				startShootingTime = Time.time;
@@ -108,17 +117,17 @@ public class BossScript : MonoBehaviour {
 				nextShotTime = Time.time + shootFrequency;
 			}
 		}
-		if ((gameController.RightTrigger.WasReleased && !onCoolDown)
-			|| (Time.time > stopShootingTime && !onCoolDown)) {
+		if (gameController.RightTrigger.WasReleased) {
 			coolDownTime = Time.time;
 			onCoolDown = true;
 			coolDownLength = (Time.time - startShootingTime);
-
 			isShooting = false;
 			stopShootingTime += 100000;
+			Vector3 vel = thisRigidbody.velocity;
+			vel.x = 0;
+			thisRigidbody.velocity = vel;
 		}
-
-		if (rightStickPressed() && !onCoolDown){
+		if (rightStickPressed()){
 			float rot = rotationAmount();
 			gun.transform.RotateAround(transform.position, Vector3.forward, rot);
 		}
@@ -205,5 +214,8 @@ public class BossScript : MonoBehaviour {
 		//decrement number of players in game because whoever was boss is out of the game
 		CameraScript.playerCount--;
 		CameraScript.playerCountAlive = CameraScript.playerCount;
+		onCoolDown = false;
+		coolDownTime = 0;
+		isShooting = false;
 	}
 }
