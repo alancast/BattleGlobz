@@ -32,6 +32,9 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				ballHoldTime = 3;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
+	
+	//only true when the boss freezes the player
+	public bool 		isFrozen = false;
 
 	//handle for animator
 	public Animator     globAnimator;
@@ -87,6 +90,14 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//don't do anything if it's frozen, unless the boss is dead
+		//then respawn everyone
+		if (isFrozen && CameraScript.isBoss){
+			return;
+		}
+		else if (isFrozen && !CameraScript.isBoss){
+			isFrozen = false;
+		}
 		handleGlobAnims ();
 
 		// Use last device which provided input.
@@ -329,9 +340,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		timeOfDeath = Time.time;
 		isDead = true;
 		//if died while boss decrement the player count alive
-		if (CameraScript.isBoss){
-			CameraScript.playerCountAlive--;
-		}
 		CameraScript.instance.addScore(killerNum,1);
 	}
 
