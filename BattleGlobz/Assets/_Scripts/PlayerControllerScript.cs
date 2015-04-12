@@ -203,7 +203,7 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
 				shootProjectile(projectileVelocity * projectileSpeed, false);
-				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
+				CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
 			}
 			//ball forced out after neutral
@@ -325,7 +325,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
 		}
 		this.transform.position = new Vector3 (-100, -100, 0);
-		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
+		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
 		isDead = true;
 		//if died while boss decrement the player count alive
