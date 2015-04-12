@@ -205,37 +205,14 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	//controls the players jumping every update
 	void handleJumping(){
-<<<<<<< HEAD
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.UpArrow)){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator1.SetTrigger("jump");
-					globAnimator2.SetTrigger("jump");
-					globAnimator3.SetTrigger("jump");
-				}
-			}
-		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
-			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator1.SetTrigger("jump");
-					globAnimator2.SetTrigger("jump");
-					globAnimator3.SetTrigger("jump");
-				}
-=======
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 		if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 			if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 				thisRigidbody.AddForce(Vector3.up*jumpAccel);
-				globAnimator.SetTrigger("jump");
->>>>>>> origin/dev
+				globAnimator1.SetTrigger("jump");
+				globAnimator2.SetTrigger("jump");
+				globAnimator3.SetTrigger("jump");
+			
 			}
 		}
 	}
