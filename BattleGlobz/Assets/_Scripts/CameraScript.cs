@@ -153,7 +153,6 @@ public class CameraScript : MonoBehaviour {
 			winners.Clear();
 		}
 		champion = championNum;
-//		timeText.text = "Champion is Player" + champion.ToString() + "!!!";
 		timeText.text = "";
 		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
 		Material mat = null;
