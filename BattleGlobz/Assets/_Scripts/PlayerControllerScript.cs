@@ -37,8 +37,12 @@ public class PlayerControllerScript : MonoBehaviour {
 	public bool			testingWithKeyboard = false;
 
 	//handle for animator
-	public Animator     globAnimator;
+	public Animator     globAnimator1;
+	public Animator     globAnimator2;
+	public Animator     globAnimator3;
 	public Animator     arrowAnimator;
+	public Animator     faceAnimator;
+	public Animator		handAnimator;
 
 	/// <summary>
 	/// //////////////////////temp public material
@@ -111,9 +115,22 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//function for handleing non triggered animations
 	void handleGlobAnims (){
+		//pass arrow params
 		arrowAnimator.SetBool ("hasBall", hasProjectile);
-		globAnimator.SetBool("grounded", grounded);
-		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+		//pass glob body params
+		globAnimator1.SetBool("grounded", grounded);
+		globAnimator1.SetFloat("x_vel", thisRigidbody.velocity.x);
+		globAnimator2.SetBool("grounded", grounded);
+		globAnimator2.SetFloat("x_vel", thisRigidbody.velocity.x);
+		globAnimator3.SetBool("grounded", grounded);
+		globAnimator3.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+		//pass face params
+		faceAnimator.SetBool("grounded", grounded);
+		faceAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+
 	}
 
 	void handleDash() {
@@ -204,7 +221,9 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.UpArrow)){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
+					globAnimator1.SetTrigger("jump");
+					globAnimator2.SetTrigger("jump");
+					globAnimator3.SetTrigger("jump");
 				}
 			}
 		}
@@ -215,7 +234,9 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
 				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
+					globAnimator1.SetTrigger("jump");
+					globAnimator2.SetTrigger("jump");
+					globAnimator3.SetTrigger("jump");
 				}
 			}
 		}
@@ -311,6 +332,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		//ball shot by someone
 		if(!neutral){
+			handAnimator.SetTrigger("throw");
+
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;

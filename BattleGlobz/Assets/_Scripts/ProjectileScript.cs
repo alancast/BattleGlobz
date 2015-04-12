@@ -71,6 +71,12 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	
 	void Update () {
+
+		Rigidbody tmp = this.GetComponent<Rigidbody> ();
+		Vector3 tmpForce = -9f * tmp.mass * Vector3.up; 
+
+		tmp.AddForce (tmpForce);
+
 		if(frameCounter++ == 1)
 			this.GetComponent<Collider> ().enabled = true;
 
