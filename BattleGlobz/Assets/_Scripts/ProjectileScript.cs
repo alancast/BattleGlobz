@@ -5,8 +5,10 @@ public class ProjectileScript : MonoBehaviour {
 	public int ownerNum;
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
-	private float neutralThresh = 1f;
+	private float neutralThresh = 1000f;
 	private int frameCounter = 0;
+	private bool hasBounced = false;
+	public bool neutralOnBounce;
 
 
 	void OnCollisionStay(Collision collision){
@@ -48,15 +50,19 @@ public class ProjectileScript : MonoBehaviour {
 				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				GetComponent<TrailRenderer>().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
+				other.transform.parent.GetComponent<PlayerControllerScript>().shieldAnimator.SetTrigger ("Hit");
 			}
 			break;
 		case "Platform":
 
 			Vector3 origin = this.transform.position;
 			if (Physics.Raycast (origin, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .7f)){
-				GetComponent<Renderer> ().material.color = Color.gray;
-				GetComponent<TrailRenderer> ().material.color = Color.gray;
-				ownerNum = -1;
+				hasBounced = true;
+				if(neutralOnBounce){
+					GetComponent<Renderer> ().material.color = Color.gray;
+					GetComponent<TrailRenderer> ().material.color = Color.gray;
+					ownerNum = -1;
+				}
 			}
 
 			break;
@@ -66,6 +72,12 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	
 	void Update () {
+
+		Rigidbody tmp = this.GetComponent<Rigidbody> ();
+		Vector3 tmpForce = -9f * tmp.mass * Vector3.up; 
+
+		tmp.AddForce (tmpForce);
+
 		if(frameCounter++ == 1)
 			this.GetComponent<Collider> ().enabled = true;
 
@@ -78,8 +90,9 @@ public class ProjectileScript : MonoBehaviour {
 		}
 		// if moving slowly and on the ground, make nuetral
 		if(GetComponent<Rigidbody> ().velocity.sqrMagnitude < neutralThresh) {
-			if (Physics.Raycast (transform.position, Vector3.down, GetComponent<Collider> ().bounds.size.y/2 + .2f)) {
+			if(hasBounced){
 				GetComponent<Renderer> ().material.color = Color.gray;
+				GetComponent<TrailRenderer> ().material.color = Color.gray;
 				ownerNum = -1;
 			}
 		}

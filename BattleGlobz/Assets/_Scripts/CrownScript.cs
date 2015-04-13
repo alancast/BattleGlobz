@@ -14,8 +14,6 @@ public class CrownScript : MonoBehaviour {
 			Destroy(other.gameObject);
 			Destroy (this.gameObject);
 		}
-	
-
 	}
 
 	// Use this for initialization

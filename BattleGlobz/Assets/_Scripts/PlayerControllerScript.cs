@@ -9,6 +9,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Rigidbody	thisRigidbody;
 	//what will be shot when you fire the gun (set in inspector)
 	public GameObject	projectile;
+	//what will drop when you die (set in inspector)
+	public GameObject	deadHead;
 	//Players shield child object
 	GameObject 		shield;
 	bool 			shieldUp = false;
@@ -30,15 +32,21 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				ballFireTime = 10000000000;
 	//amount of time you can hold onto ball for
 	float				ballHoldTime = 3;
+	float				ballWarnTime = .5f;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
-	//set to true if you are testing game with keyboard
-
-	public bool			testingWithKeyboard = false;
+	
+	//only true when the boss freezes the player
+	public bool 		isFrozen = false;
 
 	//handle for animator
-	public Animator     globAnimator;
+	public Animator     globAnimator1;
+	public Animator     globAnimator2;
+	public Animator     globAnimator3;
 	public Animator     arrowAnimator;
+	public Animator     faceAnimator;
+	public Animator		handAnimator;
+	public Animator		shieldAnimator;
 
 	/// <summary>
 	/// //////////////////////temp public material
@@ -81,6 +89,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
+		shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		shieldSize = shield.transform.lossyScale.y;
@@ -91,6 +100,14 @@ public class PlayerControllerScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		handleGlobAnims ();
+		//don't do anything if it's frozen, unless the boss is dead
+		//then respawn everyone
+		if (isFrozen && CameraScript.isBoss){
+			return;
+		}
+		else if (isFrozen && !CameraScript.isBoss){
+			isFrozen = false;
+		}
 
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
@@ -111,9 +128,22 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//function for handleing non triggered animations
 	void handleGlobAnims (){
+		//pass arrow params
 		arrowAnimator.SetBool ("hasBall", hasProjectile);
-		globAnimator.SetBool("grounded", grounded);
-		globAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+		//pass glob body params
+		globAnimator1.SetBool("grounded", grounded);
+		globAnimator1.SetFloat("x_vel", thisRigidbody.velocity.x);
+		globAnimator2.SetBool("grounded", grounded);
+		globAnimator2.SetFloat("x_vel", thisRigidbody.velocity.x);
+		globAnimator3.SetBool("grounded", grounded);
+		globAnimator3.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+		//pass face params
+		faceAnimator.SetBool("grounded", grounded);
+		faceAnimator.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+
 	}
 
 	void handleDash() {
@@ -161,80 +191,39 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//controls the players velocity every update
 	void handleVelocity(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKey(KeyCode.LeftArrow)){
-				if (thisRigidbody.velocity.x > -maxXSpeed){
-					thisRigidbody.AddForce(Vector3.left*xAccel*Time.deltaTime);
-				}
-			}
-			if (Input.GetKey(KeyCode.RightArrow)){
-				if (thisRigidbody.velocity.x < maxXSpeed){
-					thisRigidbody.AddForce(Vector3.right*xAccel*Time.deltaTime);
-				}
+		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if (gameController.LeftStick.Left){
+			if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
+				Vector3 forceVector = Vector3.zero;
+				forceVector.x = gameController.LeftStickX;
+				thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 			}
 		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
-			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.LeftStick.Left){
-				if (thisRigidbody.velocity.x > -maxXSpeed && !isDashing){
-					Vector3 forceVector = Vector3.zero;
-					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
-				}
-			}
-			if (gameController.LeftStick.Right){
-				if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
-					Vector3 forceVector = Vector3.zero;
-					forceVector.x = gameController.LeftStickX;
-					thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
-				}
+		if (gameController.LeftStick.Right){
+			if (thisRigidbody.velocity.x < maxXSpeed && !isDashing){
+				Vector3 forceVector = Vector3.zero;
+				forceVector.x = gameController.LeftStickX;
+				thisRigidbody.AddForce(forceVector*xAccel*Time.deltaTime);
 			}
 		}
 	}
 	
 	//controls the players jumping every update
 	void handleJumping(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.UpArrow)){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
-				}
-			}
-		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
-			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-			if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
-				if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
-					thisRigidbody.AddForce(Vector3.up*jumpAccel);
-					globAnimator.SetTrigger("jump");
-				}
+		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
+		if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
+			if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
+				thisRigidbody.AddForce(Vector3.up*jumpAccel);
+				globAnimator1.SetTrigger("jump");
+				globAnimator2.SetTrigger("jump");
+				globAnimator3.SetTrigger("jump");
+			
 			}
 		}
 	}
 		
 	//handles the gun and shield every update, rotation and shooting
 	void handleGunAndShield(){
-		//for testing with keyboard
-//		--------------------------------------------------------------------------
-		if (testingWithKeyboard){
-			if (Input.GetKeyDown(KeyCode.Space) && hasProjectile && !shieldUp){
-				Vector3 projectileVelocity = shootAngle();
-				shootProjectile(projectileVelocity * projectileSpeed, false);
-			}
-			// Need to implement for shield
-		}
-//		--------------------------------------------------------------------------
-		//for testing with controller
-		else {
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
 			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
@@ -250,8 +239,12 @@ public class PlayerControllerScript : MonoBehaviour {
 					projectileVelocity.y = Mathf.Sin(gunAngle * Mathf.Deg2Rad);
 				}
 				shootProjectile(projectileVelocity * projectileSpeed, false);
-				//CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
+				CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
+			}
+			//ball warning before forced out after neutral
+			if (Time.time > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
+				print("red arrow");
 			}
 			//ball forced out after neutral
 			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
@@ -264,14 +257,13 @@ public class PlayerControllerScript : MonoBehaviour {
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
 				shieldUp = true;
-				shield.GetComponent<Renderer>().enabled = true;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 				shield.GetComponent<Collider>().enabled = true;
-
 			}
 			// remove shield
 			if (gameController.LeftTrigger.WasReleased) {
 				shieldUp = false;
-				shield.GetComponent<Renderer>().enabled = false;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 				shield.GetComponent<Collider>().enabled = false;
 			}
 			//rotate gun and shield
@@ -280,7 +272,6 @@ public class PlayerControllerScript : MonoBehaviour {
 				gun.transform.RotateAround(transform.position, Vector3.forward, rot);
 				shield.transform.RotateAround(transform.position, Vector3.forward, rot);
 			}
-		}
 
 		// Update shield energy and size
 		//smaller numbers = slower charge
@@ -290,7 +281,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if(shieldEnergy < 0f){
 				shieldEnergy = 0f;
 				shieldUp = false;
-				shield.GetComponent<Renderer>().enabled = false;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 				shield.GetComponent<Collider>().enabled = false;
 			}
 		} else {
@@ -311,6 +302,8 @@ public class PlayerControllerScript : MonoBehaviour {
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		//ball shot by someone
 		if(!neutral){
+			handAnimator.SetTrigger("throw");
+
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
 			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
@@ -363,6 +356,9 @@ public class PlayerControllerScript : MonoBehaviour {
 			currentHealth--;
 			return;
 		}
+		Vector3 deadHeadPos = this.transform.position;
+		deadHeadPos.y += 1;
+		Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero));
 		currentHealth = maxHealth;
 		//remove the ball if you have it
 		if (hasProjectile){
@@ -373,13 +369,10 @@ public class PlayerControllerScript : MonoBehaviour {
 			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
 		}
 		this.transform.position = new Vector3 (-100, -100, 0);
-		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
+		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
 		isDead = true;
 		//if died while boss decrement the player count alive
-		if (CameraScript.isBoss){
-			CameraScript.playerCountAlive--;
-		}
 		CameraScript.instance.addScore(killerNum,1);
 	}
 
