@@ -46,6 +46,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Animator     arrowAnimator;
 	public Animator     faceAnimator;
 	public Animator		handAnimator;
+	public Animator		shieldAnimator;
 
 	/// <summary>
 	/// //////////////////////temp public material
@@ -88,6 +89,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		ballInd = transform.GetChild(0).transform.GetChild(0).gameObject;
 		shield.GetComponent<Renderer>().enabled = false;
 		shield.GetComponent<Collider>().enabled = false;
+		shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 		shieldEnergy = maxShieldEnergy;
 		respawnPoint = new Vector3 (Camera.main.transform.position.x, -6, 0);
 		shieldSize = shield.transform.lossyScale.y;
@@ -255,14 +257,13 @@ public class PlayerControllerScript : MonoBehaviour {
 			// generate shield
 			if (gameController.LeftTrigger.WasPressed) { 
 				shieldUp = true;
-				shield.GetComponent<Renderer>().enabled = true;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 				shield.GetComponent<Collider>().enabled = true;
-
 			}
 			// remove shield
 			if (gameController.LeftTrigger.WasReleased) {
 				shieldUp = false;
-				shield.GetComponent<Renderer>().enabled = false;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 				shield.GetComponent<Collider>().enabled = false;
 			}
 			//rotate gun and shield
@@ -280,7 +281,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if(shieldEnergy < 0f){
 				shieldEnergy = 0f;
 				shieldUp = false;
-				shield.GetComponent<Renderer>().enabled = false;
+				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 				shield.GetComponent<Collider>().enabled = false;
 			}
 		} else {

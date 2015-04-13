@@ -50,6 +50,7 @@ public class ProjectileScript : MonoBehaviour {
 				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				GetComponent<TrailRenderer>().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
+				other.transform.parent.GetComponent<PlayerControllerScript>().shieldAnimator.SetTrigger ("Hit");
 			}
 			break;
 		case "Platform":
