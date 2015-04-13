@@ -10,7 +10,6 @@ public class ProjectileScript : MonoBehaviour {
 	private bool hasBounced = false;
 	public bool neutralOnBounce;
 
-
 	void OnCollisionStay(Collision collision){
 		if (ownerNum == -1){
 			OnCollisionEnter(collision);
@@ -71,8 +70,7 @@ public class ProjectileScript : MonoBehaviour {
 		}
 	}
 	
-	void Update () {
-
+	void Update () {		
 		Rigidbody tmp = this.GetComponent<Rigidbody> ();
 		Vector3 tmpForce = -9f * tmp.mass * Vector3.up; 
 
