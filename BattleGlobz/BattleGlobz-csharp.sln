@@ -23,6 +23,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+<<<<<<< HEAD
 																																																																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
 <<<<<<< HEAD
 =======
@@ -30,6 +31,9 @@ Global
 >>>>>>> Stashed changes
 =======
 >>>>>>> origin/dev
+=======
+																																																																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> AlexBranch
 =======
 <<<<<<< Updated upstream
 																																																																																																GlobalSection(MonoDevelopProperties) = preSolution

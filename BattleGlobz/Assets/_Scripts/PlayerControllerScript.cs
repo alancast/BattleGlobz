@@ -32,6 +32,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				ballFireTime = 10000000000;
 	//amount of time you can hold onto ball for
 	float				ballHoldTime = 3;
+	float				ballWarnTime = .5f;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	
@@ -96,6 +97,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		handleGlobAnims ();
 		//don't do anything if it's frozen, unless the boss is dead
 		//then respawn everyone
 		if (isFrozen && CameraScript.isBoss){
@@ -104,7 +106,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		else if (isFrozen && !CameraScript.isBoss){
 			isFrozen = false;
 		}
-		handleGlobAnims ();
 
 		// Use last device which provided input.
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
@@ -238,6 +239,10 @@ public class PlayerControllerScript : MonoBehaviour {
 				shootProjectile(projectileVelocity * projectileSpeed, false);
 				CameraScript.instance.source.PlayOneShot(CameraScript.instance.ballThrow);
 				hasProjectile = false;
+			}
+			//ball warning before forced out after neutral
+			if (Time.time > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
+				print("red arrow");
 			}
 			//ball forced out after neutral
 			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
