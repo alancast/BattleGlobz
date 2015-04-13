@@ -9,6 +9,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Rigidbody	thisRigidbody;
 	//what will be shot when you fire the gun (set in inspector)
 	public GameObject	projectile;
+	//what will drop when you die (set in inspector)
+	public GameObject	deadHead;
 	//Players shield child object
 	GameObject 		shield;
 	bool 			shieldUp = false;
@@ -348,6 +350,9 @@ public class PlayerControllerScript : MonoBehaviour {
 			currentHealth--;
 			return;
 		}
+		Vector3 deadHeadPos = this.transform.position;
+		deadHeadPos.y += 1;
+		Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero));
 		currentHealth = maxHealth;
 		//remove the ball if you have it
 		if (hasProjectile){
