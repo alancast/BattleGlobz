@@ -43,7 +43,8 @@ public class CameraScript : MonoBehaviour {
 		GameObject timeGO = GameObject.Find("TimeLeftText"); 
 		if (!timeGO) return;
 		timeText = timeGO.GetComponent<Text>();
-		timeText.text = "Time left: " + (levelTime - Time.timeSinceLevelLoad).ToString("F2");
+		int timeAsInt = (int)(levelTime - Time.timeSinceLevelLoad);
+		timeText.text = timeAsInt.ToString();
 		instantiateKillText();
 		source = GetComponent<AudioSource>();
 		playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
@@ -55,8 +56,9 @@ public class CameraScript : MonoBehaviour {
 			afterTimeFixedUpdate();
 			return;
 		}
-		float timeLeft = (levelTime - Time.timeSinceLevelLoad);
-		timeText.text = "Time left: " + timeLeft.ToString("F2");
+
+		int timeAsInt = (int)(levelTime - Time.timeSinceLevelLoad);
+		timeText.text = timeAsInt.ToString();
 	}
 	
 	//instantiates the number of kills text for the game screen
@@ -64,19 +66,19 @@ public class CameraScript : MonoBehaviour {
 		GameObject zeroGO = GameObject.Find("ZeroScoreText"); 
 		if (!zeroGO) return;
 		zeroScoreText = zeroGO.GetComponent<Text>();
-		zeroScoreText.text = "Player 0: " + playerZeroScore.ToString();
+		zeroScoreText.text = playerZeroScore.ToString();
 		GameObject oneGO = GameObject.Find("OneScoreText"); 
 		if (!oneGO) return;
 		oneScoreText = oneGO.GetComponent<Text>();
-		oneScoreText.text = "Player 1: " + playerOneScore.ToString();
+		oneScoreText.text = playerOneScore.ToString();
 		GameObject twoGO = GameObject.Find("TwoScoreText"); 
 		if (!twoGO) return;
 		twoScoreText = twoGO.GetComponent<Text>();
-		twoScoreText.text = "Player 2: " + playerTwoScore.ToString();
+		twoScoreText.text = playerTwoScore.ToString();
 		GameObject threeGo = GameObject.Find("ThreeScoreText"); 
 		if (!threeGo) return;
 		threeScoreText = threeGo.GetComponent<Text>();
-		threeScoreText.text = "Player 3: " + playerThreeScore.ToString();
+		threeScoreText.text = playerThreeScore.ToString();
 	}
 	
 	//adds int score to the score of the player (playerNum)
