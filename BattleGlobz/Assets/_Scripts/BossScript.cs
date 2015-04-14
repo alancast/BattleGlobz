@@ -37,6 +37,9 @@ public class BossScript : MonoBehaviour {
 	//how long the game will pause after there is a winner
 	float				endGamePause = 5;
 
+	//Animators
+	public Animator 	wings;
+
 	// Use this for initialization
 	void Start () {
 		thisRigidbody = GetComponent<Rigidbody>();
@@ -56,6 +59,9 @@ public class BossScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		handleAnims ();
+
+
 		if (health <= 0) {
 			handleBossDeath();
 		}
@@ -95,6 +101,11 @@ public class BossScript : MonoBehaviour {
 //			Application.LoadLevel("_Scene_Menu");
 			CameraScript.instance.timeText.text = "Refresh browser to play again";
 		}
+	}
+
+	void handleAnims (){
+		float x_vel_abs = (float) Mathf.Abs(this.thisRigidbody.velocity.x);
+			wings.SetFloat ("x_vel", x_vel_abs);
 	}
 
 	void handleShooting(){
