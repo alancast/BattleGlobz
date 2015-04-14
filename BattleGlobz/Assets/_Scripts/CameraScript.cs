@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour {
 	//true if there is a boss false if none
 	static public bool			isBoss = false;
 	//time of level until it ends
-	float 			levelTime = 75;
+	float 			levelTime = 5;
 	//text for number of kills and time
 	//public so that it can be set from BossScript when game ends
 	public Text		timeText;
@@ -32,11 +32,14 @@ public class CameraScript : MonoBehaviour {
 	//decremented in handle death if in boss mode
 	//reset to playercount if boss dies
 	static public int	playerCountAlive;
+	bool				bossMode = false;
+	float				cutsceneLength = 3f;
 	//audio clips set in inspector
 	public AudioSource	source;
 	public AudioClip	death;
 	public AudioClip	ballThrow;
-	public AudioClip	bossMode;
+	public AudioClip	bossModeSound;
+
 	
 	void Awake(){
 		instance = this;
@@ -52,7 +55,14 @@ public class CameraScript : MonoBehaviour {
 	}
 	
 	void FixedUpdate(){
-		if (Time.timeSinceLevelLoad > levelTime){
+		if (Time.timeSinceLevelLoad > levelTime && !bossMode) {
+			PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+			foreach(PlayerControllerScript p in players){
+				p.startCutscene(cutsceneLength);
+			}
+			bossMode = true;
+		}
+		if (Time.timeSinceLevelLoad > levelTime && bossMode){
 			afterTimeFixedUpdate();
 			return;
 		}

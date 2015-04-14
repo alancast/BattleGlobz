@@ -78,6 +78,11 @@ public class PlayerControllerScript : MonoBehaviour {
 	int					maxHealth = 1;
 	//seperate from MaxHealth so that numbers aren't hard coded anywhere else in code
 	int					currentHealth = 1;
+
+	//cutscene stuff
+	bool 				isInCutscene = false;
+	float				cutsceneLength = 0f;
+	float				cutsceneStart = 0f;
 	
 	void Awake(){
 		instance = this;
@@ -99,7 +104,11 @@ public class PlayerControllerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+
 		handleGlobAnims ();
+
+
 		//don't do anything if it's frozen, unless the boss is dead
 		//then respawn everyone
 		if (isFrozen && CameraScript.isBoss){
@@ -118,6 +127,13 @@ public class PlayerControllerScript : MonoBehaviour {
 			handleRespawn ();
 		}	
 
+		//if you are in a cutscene don't do any of the movement stuff
+		if (isInCutscene && (Time.time < cutsceneStart + cutsceneLength)) {
+			print ("I'm in cutscene");
+			return;
+		} else if (isInCutscene && (Time.time >= cutsceneStart + cutsceneLength)) {
+			isInCutscene = false;
+		}
 		isGrounded ();
 		handleVelocity();
 		handleJumping();
@@ -401,6 +417,12 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	public bool hasBall(){
 		return hasProjectile;
+	}
+
+	public void startCutscene(float length){
+		isInCutscene = true;
+		cutsceneLength = length;
+		cutsceneStart = Time.time;
 	}
 }
 	
