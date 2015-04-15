@@ -32,7 +32,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				ballFireTime = 10000000000;
 	//amount of time you can hold onto ball for
 	float				ballHoldTime = 3;
-	float				ballWarnTime = .5f;
+	float				ballWarnTime = .4f;
 	//what player this is 1,2,3 or 4 (set in inspector)
 	public int			playerNum;
 	
@@ -47,6 +47,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Animator     faceAnimator;
 	public Animator		handAnimator;
 	public Animator		shieldAnimator;
+	public Animator		iceBox;
 
 	/// <summary>
 	/// //////////////////////temp public material
@@ -144,6 +145,9 @@ public class PlayerControllerScript : MonoBehaviour {
 
 	//function for handleing non triggered animations
 	void handleGlobAnims (){
+
+		iceBox.SetBool ("Frozen", isFrozen);
+
 		//pass arrow params
 		arrowAnimator.SetBool ("hasBall", hasProjectile);
 
@@ -260,7 +264,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			}
 			//ball warning before forced out after neutral
 			if (Time.time > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
-				print("red arrow");
+				arrowAnimator.SetTrigger("redArrow");
 			}
 			//ball forced out after neutral
 			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){

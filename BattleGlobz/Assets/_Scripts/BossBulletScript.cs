@@ -5,6 +5,8 @@ public class BossBulletScript : MonoBehaviour {
 	public int ownerNum;
 	public float throwAt = 0f;
 	private float throwTimer = .1f;
+
+	public GameObject squishedBullet;
 	
 	// Use this for initialization
 	void OnTriggerEnter(Collider other){
@@ -17,8 +19,13 @@ public class BossBulletScript : MonoBehaviour {
 			other.gameObject.GetComponent<PlayerControllerScript> ().isFrozen = true;
 			CameraScript.playerCountAlive--;
 			Destroy(this.gameObject);
+
+			Vector3 squishPos = transform.position;
+			squishPos.y -= 1.4f;
+			Instantiate(squishedBullet, squishPos, Quaternion.Euler(Vector3.zero));
 		}
 		else {
+			Instantiate(squishedBullet, transform.position, Quaternion.Euler(Vector3.zero));
 			Destroy(this.gameObject);
 		}
 	}

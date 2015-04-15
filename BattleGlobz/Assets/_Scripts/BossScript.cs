@@ -36,9 +36,15 @@ public class BossScript : MonoBehaviour {
 	float				endGameTime = 100000000;
 	//how long the game will pause after there is a winner
 	float				endGamePause = 5;
-
+	
 	//Animators
 	public Animator 	wings;
+	public Animator		head;
+	public Animator		gem;
+	public Animator 	cutScene;
+
+	float				cutsceneLength = 2f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -48,10 +54,17 @@ public class BossScript : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
+
+		print ("hit");
+
 		if (other.tag == "Projectile") {
 			ProjectileScript projectile = other.gameObject.GetComponent<ProjectileScript>();
 			if(projectile.ownerNum != playerNum && projectile.ownerNum != -1){
 				health--;
+
+				//handle boss Hit Anim
+				head.SetTrigger("Hit");
+				print ("hit");
 			}
 		}
 
@@ -104,8 +117,16 @@ public class BossScript : MonoBehaviour {
 	}
 
 	void handleAnims (){
+
+		head.SetFloat("x_vel", this.thisRigidbody.velocity.x);
+
 		float x_vel_abs = (float) Mathf.Abs(this.thisRigidbody.velocity.x);
-			wings.SetFloat ("x_vel", x_vel_abs);
+		wings.SetFloat ("x_vel", x_vel_abs);
+
+
+		//handle shooting anim for head
+		head.SetBool("Shooting", isShooting);
+		gem.SetBool ("Shooting", isShooting);
 	}
 
 	void handleShooting(){
@@ -142,7 +163,7 @@ public class BossScript : MonoBehaviour {
 			float rot = rotationAmount();
 			gun.transform.RotateAround(transform.position, Vector3.forward, rot);
 		}
-
+		
 	}
 
 	bool rightStickPressed(){
@@ -190,14 +211,27 @@ public class BossScript : MonoBehaviour {
 		}
 	}
 
+	public void triggerCutScene(int playerNum){
+		cutScene.SetInteger ("PlayerNum", playerNum);
+		cutScene.SetTrigger ("StartCutScene");
+	}
+
 	public void CreateBoss (int bossNum, Vector3 cameraPos, Material mat){
+
 		playerNum = bossNum;
 		Vector3 pos = cameraPos;
-		this.GetComponent<Renderer> ().material = mat;
+		//this.GetComponent<Renderer> ().material = mat;
 		pos.y = -2;
 		pos.z = 0;
-		this.transform.position = pos;
+		transform.position = pos;
+		print (pos.y);
 		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
+
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		foreach(PlayerControllerScript p in players){
+			p.startCutscene(cutsceneLength);
+		}
+
 	}
 	
 	Vector3 shootAngle(){
@@ -210,7 +244,8 @@ public class BossScript : MonoBehaviour {
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	void shootProjectile(Vector3 velocity){
-		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
+		Vector3 GemPos = transform.position + shootAngle ().normalized * 4.5f;
+		GameObject temp = (GameObject)Instantiate(projectile, GemPos, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<BossBulletScript> ().ownerNum = playerNum;
 		temp.GetComponent<BossBulletScript> ().throwAt = Time.time;
@@ -218,8 +253,10 @@ public class BossScript : MonoBehaviour {
 
 	void handleBossDeath(){
 		CameraScript.isBoss = false;
-		GameObject temp = (GameObject) Instantiate (crownPrefab, transform.position, Quaternion.Euler (Vector3.zero));
-		transform.position = new Vector3 (-100, -100, 0);
+		Vector3 crownPos = transform.position;
+		crownPos.y -= 3f; 
+		GameObject temp = (GameObject) Instantiate (crownPrefab, crownPos, Quaternion.Euler (Vector3.zero));
+		transform.position = new Vector3 (0, -200, 0);
 		health = maxHealth;
 		playerNum = -1;
 		//decrement number of players in game because whoever was boss is out of the game
