@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour {
 	//true if there is a boss false if none
 	static public bool			isBoss = false;
 	//time of level until it ends
-	float 			levelTime = 5;
+	float 			levelTime = 75;
 	//text for number of kills and time
 	//public so that it can be set from BossScript when game ends
 	public Text		timeText;
@@ -33,12 +33,14 @@ public class CameraScript : MonoBehaviour {
 	//reset to playercount if boss dies
 	static public int	playerCountAlive;
 	bool				bossMode = false;
-	float				cutsceneLength = 3f;
 	//audio clips set in inspector
 	public AudioSource	source;
 	public AudioClip	death;
 	public AudioClip	ballThrow;
 	public AudioClip	bossModeSound;
+
+	//handle boss animating into scene
+	public Animator		bossAnimator;
 
 	
 	void Awake(){
@@ -53,13 +55,13 @@ public class CameraScript : MonoBehaviour {
 		playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
 		playerCountAlive = playerCount;
 	}
+
+	void Update(){
+		bossAnimator.SetBool ("isBoss", isBoss);
+	}
 	
 	void FixedUpdate(){
 		if (Time.timeSinceLevelLoad > levelTime && !bossMode) {
-			PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
-			foreach(PlayerControllerScript p in players){
-				p.startCutscene(cutsceneLength);
-			}
 			bossMode = true;
 		}
 		if (Time.timeSinceLevelLoad > levelTime && bossMode){
@@ -95,19 +97,19 @@ public class CameraScript : MonoBehaviour {
 	public void addScore(int playerNum, int score){
 		if (playerNum == 0){
 			playerZeroScore += score;
-			zeroScoreText.text = "Player 0: " + playerZeroScore.ToString();
+			zeroScoreText.text = playerZeroScore.ToString();
 		}
 		else if (playerNum == 1){
 			playerOneScore += score;
-			oneScoreText.text = "Player 1: " + playerOneScore.ToString();
+			oneScoreText.text = playerOneScore.ToString();
 		}
 		else if (playerNum == 2){
 			playerTwoScore += score;
-			twoScoreText.text = "Player 2: " + playerTwoScore.ToString();
+			twoScoreText.text =  playerTwoScore.ToString();
 		}
 		else if (playerNum == 3){
 			playerThreeScore += score;
-			threeScoreText.text = "Player 3: " + playerThreeScore.ToString();
+			threeScoreText.text = playerThreeScore.ToString();
 		}
 	}
 	
@@ -185,6 +187,7 @@ public class CameraScript : MonoBehaviour {
 		isBoss = true;
 		playerCount--;
 		playerCountAlive--;
+		FindObjectOfType<BossScript> ().triggerCutScene (championNum);
 		FindObjectOfType<BossScript> ().CreateBoss (championNum, transform.position, mat);
 	}
 }
