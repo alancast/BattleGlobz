@@ -374,7 +374,12 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 		Vector3 deadHeadPos = this.transform.position;
 		deadHeadPos.y += 1;
-		Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero));
+		GameObject head = Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero)) as GameObject;
+		Vector3 headVelocity = Vector3.zero;
+		headVelocity.x = (Random.value*2) - 1;
+		headVelocity.y = Random.value;
+		head.GetComponent<Rigidbody> ().velocity = headVelocity * projectileSpeed;
+		print (headVelocity);
 		currentHealth = maxHealth;
 		//remove the ball if you have it
 		if (hasProjectile){
