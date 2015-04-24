@@ -7,8 +7,8 @@ public class ProjectileScript : MonoBehaviour {
 	private float 	throwTimer = .1f;
 	private float 	neutralThresh = 1000f;
 	private int 	frameCounter = 0;
-	//how long this will wait before being fired
-	public int 		frameWait = 1;
+	//number of frames to wait before colliding with anything
+	public int 		frameWait;
 	private bool 	hasBounced = false;
 	public bool 	neutralOnBounce;
 	public Animator	ballAnim;

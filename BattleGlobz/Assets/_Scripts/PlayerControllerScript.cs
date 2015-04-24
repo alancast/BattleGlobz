@@ -353,10 +353,11 @@ public class PlayerControllerScript : MonoBehaviour {
 			//need to show through animation. stored in publuc variable for now
 			temp.GetComponent<Renderer> ().material = this.tempMat;
 			temp.GetComponent<TrailRenderer>().material = tempMat;
-			temp.GetComponent<ProjectileScript>().frameWait = 3;
 		}
 		//ball force ejected
 		else{
+			//wait 3 frames before accepting any collisions
+			temp.GetComponent<ProjectileScript>().frameWait = 3;
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 		}
 	}
