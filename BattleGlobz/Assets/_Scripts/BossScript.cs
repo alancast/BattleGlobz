@@ -117,7 +117,11 @@ public class BossScript : MonoBehaviour {
 			LevelMovementScript.stopMoving = false;
 			CameraScript.isBoss = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			Application.LoadLevel("_Scene_Menu");
+=======
+			Application.LoadLevel("_Scene_MainMenu");
+>>>>>>> dev
 =======
 			Application.LoadLevel("_Scene_MainMenu");
 >>>>>>> dev

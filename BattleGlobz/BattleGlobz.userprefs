@@ -1,5 +1,6 @@
 ﻿<Properties>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/ProjectileScript.cs">
     <Files>
@@ -13,6 +14,10 @@
   </MonoDevelop.Ide.Workbench>
 =======
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
+>>>>>>> dev
+=======
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench />
 >>>>>>> dev
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

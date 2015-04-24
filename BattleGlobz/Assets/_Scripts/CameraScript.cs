@@ -38,6 +38,10 @@ public class CameraScript : MonoBehaviour {
 	public AudioClip	death;
 	public AudioClip	ballThrow;
 	public AudioClip	bossModeSound;
+<<<<<<< HEAD
+=======
+	public AudioClip	bossMusic;
+>>>>>>> dev
 
 	//handle boss animating into scene
 	public Animator		bossAnimator;
@@ -63,6 +67,12 @@ public class CameraScript : MonoBehaviour {
 	void FixedUpdate(){
 		if (Time.timeSinceLevelLoad > levelTime && !bossMode) {
 			bossMode = true;
+<<<<<<< HEAD
+=======
+			source.clip = bossMusic;
+			source.loop = true;
+			source.Play();
+>>>>>>> dev
 		}
 		if (Time.timeSinceLevelLoad > levelTime && bossMode){
 			afterTimeFixedUpdate();
