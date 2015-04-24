@@ -165,6 +165,10 @@
      <Compile Include="Assets\_Scripts\LaserScript.cs" />
      <Compile Include="Assets\_Scripts\LevelMovementScript.cs" />
      <Compile Include="Assets\_Scripts\MenuScript.cs" />
+<<<<<<< HEAD
+=======
+     <Compile Include="Assets\_Scripts\MenuScript1.cs" />
+>>>>>>> jake2
      <Compile Include="Assets\_Scripts\PlayerControllerScript.cs" />
      <Compile Include="Assets\_Scripts\ProjectileScript.cs" />
      <None Include="Assets\InControl\README\README.txt" />

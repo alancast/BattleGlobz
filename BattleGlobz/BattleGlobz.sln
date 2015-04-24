@@ -5,6 +5,8 @@ Project("{EAA2AE72-9753-F4AB-33C8-7C7C43269947}") = "BattleGlobz", "Assembly-CSh
 EndProject
 Project("{EAA2AE72-9753-F4AB-33C8-7C7C43269947}") = "BattleGlobz", "Assembly-CSharp-Editor.csproj", "{684E5CFB-F9B1-12FB-5C24-03A32D97C5AB}"
 EndProject
+Project("{EAA2AE72-9753-F4AB-33C8-7C7C43269947}") = "BattleGlobz", "Assembly-UnityScript.unityproj", "{43A750A4-7992-77BF-05C4-6CD41B5F280C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,11 +21,19 @@ Global
 		{684E5CFB-F9B1-12FB-5C24-03A32D97C5AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{684E5CFB-F9B1-12FB-5C24-03A32D97C5AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{684E5CFB-F9B1-12FB-5C24-03A32D97C5AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43A750A4-7992-77BF-05C4-6CD41B5F280C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43A750A4-7992-77BF-05C4-6CD41B5F280C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43A750A4-7992-77BF-05C4-6CD41B5F280C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43A750A4-7992-77BF-05C4-6CD41B5F280C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+<<<<<<< HEAD
 																																																																																																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																																																																																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> jake2
 =======
 																																																																																																																																																																								GlobalSection(MonoDevelopProperties) = preSolution
 >>>>>>> origin/dev
