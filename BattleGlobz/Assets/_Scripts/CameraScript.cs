@@ -173,6 +173,7 @@ public class CameraScript : MonoBehaviour {
 		foreach(PlayerControllerScript p in players){
 			//respawn all dead players when the boss is set up
 			if(p.isDead){
+				p.bottomFace.SetTrigger("death");
 				p.handleRespawn();
 			}
 			//destroy the player and if he/she had a ball respawn one

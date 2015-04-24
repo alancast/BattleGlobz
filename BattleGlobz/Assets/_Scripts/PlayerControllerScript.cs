@@ -48,6 +48,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Animator		handAnimator;
 	public Animator		shieldAnimator;
 	public Animator		iceBox;
+	public Animator		bottomFace;
+	public Animator		ballIndicator;
 
 	/// <summary>
 	/// //////////////////////temp public material
@@ -101,8 +103,11 @@ public class PlayerControllerScript : MonoBehaviour {
 		shieldSize = shield.transform.lossyScale.y;
 		ballInd.GetComponent<Renderer>().enabled = false;
 
+		bottomFace.SetBool("boss", false);
+
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 
@@ -130,7 +135,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 		//if you are in a cutscene don't do any of the movement stuff
 		if (isInCutscene && (Time.time < cutsceneStart + cutsceneLength)) {
-			print ("I'm in cutscene");
+			//print ("I'm in cutscene");
 			return;
 		} else if (isInCutscene && (Time.time >= cutsceneStart + cutsceneLength)) {
 			isInCutscene = false;
@@ -146,6 +151,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	//function for handleing non triggered animations
 	void handleGlobAnims (){
 
+		ballIndicator.SetBool ("hasBall", hasProjectile);
+
 		iceBox.SetBool ("Frozen", isFrozen);
 
 		//pass arrow params
@@ -158,6 +165,9 @@ public class PlayerControllerScript : MonoBehaviour {
 		globAnimator2.SetFloat("x_vel", thisRigidbody.velocity.x);
 		globAnimator3.SetBool("grounded", grounded);
 		globAnimator3.SetFloat("x_vel", thisRigidbody.velocity.x);
+
+		bottomFace.SetBool("grounded", grounded);
+		bottomFace.SetFloat("x_vel", thisRigidbody.velocity.x);
 
 		//pass face params
 		faceAnimator.SetBool("grounded", grounded);
@@ -266,6 +276,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			if (Time.time > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
 				arrowAnimator.SetTrigger("redArrow");
 			}
+
 			//ball forced out after neutral
 			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
 				Vector3 projectileVelocity = Vector3.zero;
@@ -317,7 +328,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	//neutral will be true if the ball was force ejected so the projectile should be neutral
 	void shootProjectile(Vector3 velocity, bool neutral){
 
-		ballInd.GetComponent<Renderer>().enabled = false;
+		//ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
 		//ball shot by someone
@@ -388,6 +399,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			//put ball in center screen
 			Instantiate(projectile, CameraScript.instance.transform.position, Quaternion.Euler(Vector3.zero));
 		}
+		bottomFace.SetTrigger("death");
 		this.transform.position = new Vector3 (-100, -100, 0);
 		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
 		timeOfDeath = Time.time;
@@ -414,7 +426,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	}
 
 	public void pickUpProjectile(){
-		ballInd.GetComponent<Renderer>().enabled = true;
+		//ballInd.GetComponent<Renderer>().enabled = true;
 		hasProjectile = true;
 		ballFireTime = Time.time + ballHoldTime;
 	}

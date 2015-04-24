@@ -9,6 +9,11 @@ public class ProjectileScript : MonoBehaviour {
 	private int frameCounter = 0;
 	private bool hasBounced = false;
 	public bool neutralOnBounce;
+	public Animator		ballAnim;
+
+	void Awake(){
+		ownerNum = -1;
+	}
 
 	void OnCollisionStay(Collision collision){
 		if (ownerNum == -1){
@@ -46,6 +51,7 @@ public class ProjectileScript : MonoBehaviour {
 			//This will make sure that you can't push a live ball across the floor
 			if(ownerNum != -1){
 				otherPlayerNum = other.transform.parent.GetComponent<PlayerControllerScript>().playerNum;
+
 				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				GetComponent<TrailRenderer>().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
@@ -71,6 +77,9 @@ public class ProjectileScript : MonoBehaviour {
 	}
 	
 	void Update () {		
+
+		ballAnim.SetInteger("playerNum", ownerNum);
+
 		Rigidbody tmp = this.GetComponent<Rigidbody> ();
 		Vector3 tmpForce = -9f * tmp.mass * Vector3.up; 
 
@@ -108,13 +117,13 @@ public class ProjectileScript : MonoBehaviour {
 		//check if off screen x
 		if(transform.position.x < left.position.x - buffer || 
 			transform.position.x > right.position.x + buffer){
-			print("ball off screen x");
+			//print("ball off screen x");
 			return true;  
 		}
 		//check if off screen y
 		if(transform.position.y < bottom.position.y - (2*buffer) || 
 		   transform.position.y > top.position.y + buffer){
-			print("ball off screen y");
+			//print("ball off screen y");
 			return true;  
 		}
 		return false;

@@ -30,6 +30,7 @@ public class BossScript : MonoBehaviour {
 	float				coolDownLength = 1f;
 	float				coolDownTime = 0f;
 	float				coolDownRatio = 1.5f;
+
 	//speed of the boss bullet when fired
 	float				bossBulletSpeed = 30;
 	//the menu screen will load when this is over
@@ -42,6 +43,7 @@ public class BossScript : MonoBehaviour {
 	public Animator		head;
 	public Animator		gem;
 	public Animator 	cutScene;
+	public Animator		healthBar;
 
 	float				cutsceneLength = 2f;
 
@@ -106,17 +108,20 @@ public class BossScript : MonoBehaviour {
 		}
 		
 		if (CameraScript.playerCountAlive == 0 && Time.timeSinceLevelLoad < endGameTime){
-			CameraScript.instance.timeText.text = "Champion is Player" + playerNum.ToString() + "!!!";
+			CameraScript.instance.timeText.fontSize = 50;
+			CameraScript.instance.timeText.text = "Player " + playerNum.ToString() + System.Environment.NewLine + "WINS";
 			endGameTime = Time.timeSinceLevelLoad;
 		}
 		
 		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
 //			Application.LoadLevel("_Scene_Menu");
-			CameraScript.instance.timeText.text = "Refresh browser to play again";
+			CameraScript.instance.timeText.text = "Refresh";
 		}
 	}
 
 	void handleAnims (){
+
+		healthBar.SetInteger ("Health", health);
 
 		head.SetFloat("x_vel", this.thisRigidbody.velocity.x);
 
@@ -230,6 +235,9 @@ public class BossScript : MonoBehaviour {
 		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
 		foreach(PlayerControllerScript p in players){
 			p.startCutscene(cutsceneLength);
+			if(p.playerNum == bossNum){
+				p.bottomFace.SetBool("boss", true);
+			}
 		}
 
 	}
@@ -252,6 +260,14 @@ public class BossScript : MonoBehaviour {
 	}
 
 	void handleBossDeath(){
+
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		foreach(PlayerControllerScript p in players){
+			if(p.playerNum == playerNum){
+				p.bottomFace.SetTrigger("gone");
+			}
+		}
+
 		CameraScript.isBoss = false;
 		Vector3 crownPos = transform.position;
 		crownPos.y -= 3f; 
