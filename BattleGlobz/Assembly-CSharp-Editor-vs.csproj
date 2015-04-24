@@ -59,6 +59,9 @@
      <Compile Include="Assets\InControl\Editor\ReorderableList\ReorderableListGUI.cs" />
      <Compile Include="Assets\InControl\Editor\ReorderableList\SerializedPropertyAdaptor.cs" />
      <None Include="Assets\InControl\README\README.txt" />
+ <Reference Include="Assembly-UnityScript">
+ <HintPath>/Users/Alex/Google Drive/EECS 494/BattleGlobz/BattleGlobz/Library/ScriptAssemblies/Assembly-UnityScript.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
