@@ -30,12 +30,23 @@ public class BossScript : MonoBehaviour {
 	float				coolDownLength = 1f;
 	float				coolDownTime = 0f;
 	float				coolDownRatio = 1.5f;
+
 	//speed of the boss bullet when fired
 	float				bossBulletSpeed = 30;
 	//the menu screen will load when this is over
 	float				endGameTime = 100000000;
 	//how long the game will pause after there is a winner
 	float				endGamePause = 5;
+	
+	//Animators
+	public Animator 	wings;
+	public Animator		head;
+	public Animator		gem;
+	public Animator 	cutScene;
+	public Animator		healthBar;
+
+	float				cutsceneLength = 2f;
+
 
 	// Use this for initialization
 	void Start () {
@@ -45,10 +56,17 @@ public class BossScript : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
+
+		print ("hit");
+
 		if (other.tag == "Projectile") {
 			ProjectileScript projectile = other.gameObject.GetComponent<ProjectileScript>();
 			if(projectile.ownerNum != playerNum && projectile.ownerNum != -1){
 				health--;
+
+				//handle boss Hit Anim
+				head.SetTrigger("Hit");
+				print ("hit");
 			}
 		}
 
@@ -56,6 +74,9 @@ public class BossScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		handleAnims ();
+
+
 		if (health <= 0) {
 			handleBossDeath();
 		}
@@ -64,9 +85,9 @@ public class BossScript : MonoBehaviour {
 		}
 		//to stop shooting without releasing the trigger
 		if(Time.timeSinceLevelLoad > stopShootingTime && !onCoolDown){
-			coolDownTime = Time.time;
+			coolDownTime = Time.timeSinceLevelLoad;
 			onCoolDown = true;
-			coolDownLength = (Time.time - startShootingTime);
+			coolDownLength = (Time.timeSinceLevelLoad - startShootingTime);
 			isShooting = false;
 			stopShootingTime += 100000;
 			Vector3 vel = thisRigidbody.velocity;
@@ -78,7 +99,7 @@ public class BossScript : MonoBehaviour {
 			handleShooting();
 		}
 		if (onCoolDown) {
-			float ratio = coolDownLength - (Time.timeSinceLevelLoad - coolDownTime);
+			float ratio = (coolDownLength - (Time.timeSinceLevelLoad - coolDownTime))/2;
 			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
 		}
 		if (Time.timeSinceLevelLoad > coolDownTime + coolDownLength && onCoolDown){
@@ -87,40 +108,58 @@ public class BossScript : MonoBehaviour {
 		}
 		
 		if (CameraScript.playerCountAlive == 0 && Time.timeSinceLevelLoad < endGameTime){
-			CameraScript.instance.timeText.text = "Champion is Player" + playerNum.ToString() + "!!!";
+			CameraScript.instance.timeText.fontSize = 50;
+			CameraScript.instance.timeText.text = "Player " + playerNum.ToString() + System.Environment.NewLine + "WINS";
 			endGameTime = Time.timeSinceLevelLoad;
 		}
 		
 		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
-//			Application.LoadLevel("_Scene_Menu");
-			CameraScript.instance.timeText.text = "Refresh browser to play again";
+			LevelMovementScript.stopMoving = false;
+			CameraScript.isBoss = false;
+			Application.LoadLevel("_Scene_Menu");
+//			CameraScript.instance.timeText.text = "Refresh";
 		}
+	}
+
+	void handleAnims (){
+
+		healthBar.SetInteger ("Health", health);
+
+		head.SetFloat("x_vel", this.thisRigidbody.velocity.x);
+
+		float x_vel_abs = (float) Mathf.Abs(this.thisRigidbody.velocity.x);
+		wings.SetFloat ("x_vel", x_vel_abs);
+
+
+		//handle shooting anim for head
+		head.SetBool("Shooting", isShooting);
+		gem.SetBool ("Shooting", isShooting);
 	}
 
 	void handleShooting(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
 		if (gameController.RightTrigger.IsPressed) {
 			if (!isShooting){
-				stopShootingTime = Time.time + shootingLength;
-				startShootingTime = Time.time;
+				stopShootingTime = Time.timeSinceLevelLoad + shootingLength;
+				startShootingTime = Time.timeSinceLevelLoad;
 			}
 			thisRigidbody.velocity = Vector3.zero;
 			isShooting = true;
 			//Handle coolDownSphere size
-			float elapsed = 1 - (stopShootingTime - Time.time);
-			float ratio = elapsed/shootingLength;
+			float elapsed = 1 - (stopShootingTime - Time.timeSinceLevelLoad);
+			float ratio = (elapsed/shootingLength)/2;
 			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
 
-			if (Time.time > nextShotTime){
+			if (Time.timeSinceLevelLoad > nextShotTime){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * bossBulletSpeed);
-				nextShotTime = Time.time + shootFrequency;
+				nextShotTime = Time.timeSinceLevelLoad + shootFrequency;
 			}
 		}
 		if (gameController.RightTrigger.WasReleased) {
-			coolDownTime = Time.time;
+			coolDownTime = Time.timeSinceLevelLoad;
 			onCoolDown = true;
-			coolDownLength = (Time.time - startShootingTime);
+			coolDownLength = (Time.timeSinceLevelLoad - startShootingTime);
 			isShooting = false;
 			stopShootingTime += 100000;
 			Vector3 vel = thisRigidbody.velocity;
@@ -131,7 +170,7 @@ public class BossScript : MonoBehaviour {
 			float rot = rotationAmount();
 			gun.transform.RotateAround(transform.position, Vector3.forward, rot);
 		}
-
+		
 	}
 
 	bool rightStickPressed(){
@@ -179,14 +218,30 @@ public class BossScript : MonoBehaviour {
 		}
 	}
 
+	public void triggerCutScene(int playerNum){
+		cutScene.SetInteger ("PlayerNum", playerNum);
+		cutScene.SetTrigger ("StartCutScene");
+	}
+
 	public void CreateBoss (int bossNum, Vector3 cameraPos, Material mat){
+
 		playerNum = bossNum;
 		Vector3 pos = cameraPos;
-		this.GetComponent<Renderer> ().material = mat;
+		//this.GetComponent<Renderer> ().material = mat;
 		pos.y = -2;
 		pos.z = 0;
-		this.transform.position = pos;
+		transform.position = pos;
+		print (pos.y);
 		//CameraScript.instance.source.PlayOneShot(CameraScript.instance.bossMode);
+
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		foreach(PlayerControllerScript p in players){
+			p.startCutscene(cutsceneLength);
+			if(p.playerNum == bossNum){
+				p.bottomFace.SetBool("boss", true);
+			}
+		}
+
 	}
 	
 	Vector3 shootAngle(){
@@ -199,16 +254,27 @@ public class BossScript : MonoBehaviour {
 	
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	void shootProjectile(Vector3 velocity){
-		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
+		Vector3 GemPos = transform.position + shootAngle ().normalized * 4.5f;
+		GameObject temp = (GameObject)Instantiate(projectile, GemPos, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<BossBulletScript> ().ownerNum = playerNum;
-		temp.GetComponent<BossBulletScript> ().throwAt = Time.time;
+		temp.GetComponent<BossBulletScript> ().throwAt = Time.timeSinceLevelLoad;
 	}
 
 	void handleBossDeath(){
+
+		PlayerControllerScript[] players = FindObjectsOfType<PlayerControllerScript> ();
+		foreach(PlayerControllerScript p in players){
+			if(p.playerNum == playerNum){
+				p.bottomFace.SetTrigger("gone");
+			}
+		}
+
 		CameraScript.isBoss = false;
-		GameObject temp = (GameObject) Instantiate (crownPrefab, transform.position, Quaternion.Euler (Vector3.zero));
-		transform.position = new Vector3 (-100, -100, 0);
+		Vector3 crownPos = transform.position;
+		crownPos.y -= 3f; 
+		GameObject temp = (GameObject) Instantiate (crownPrefab, crownPos, Quaternion.Euler (Vector3.zero));
+		transform.position = new Vector3 (0, -200, 0);
 		health = maxHealth;
 		playerNum = -1;
 		//decrement number of players in game because whoever was boss is out of the game
@@ -217,5 +283,6 @@ public class BossScript : MonoBehaviour {
 		onCoolDown = false;
 		coolDownTime = 0;
 		isShooting = false;
+		healthBar.SetInteger ("Health", maxHealth);
 	}
 }
