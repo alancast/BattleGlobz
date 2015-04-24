@@ -114,8 +114,10 @@ public class BossScript : MonoBehaviour {
 		}
 		
 		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
-//			Application.LoadLevel("_Scene_Menu");
-			CameraScript.instance.timeText.text = "Refresh";
+			LevelMovementScript.stopMoving = false;
+			CameraScript.isBoss = false;
+			Application.LoadLevel("_Scene_Menu");
+//			CameraScript.instance.timeText.text = "Refresh";
 		}
 	}
 
@@ -281,5 +283,6 @@ public class BossScript : MonoBehaviour {
 		onCoolDown = false;
 		coolDownTime = 0;
 		isShooting = false;
+		healthBar.SetInteger ("Health", maxHealth);
 	}
 }

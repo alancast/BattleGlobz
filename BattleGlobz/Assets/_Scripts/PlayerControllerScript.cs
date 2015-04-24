@@ -83,6 +83,9 @@ public class PlayerControllerScript : MonoBehaviour {
 	float				cutsceneLength = 0f;
 	float				cutsceneStart = 0f;
 	
+	//used for the red arrow bug
+	bool				beenWarned = false;
+	
 	void Awake(){
 		instance = this;
 		thisRigidbody = GetComponent<Rigidbody>();
@@ -114,6 +117,13 @@ public class PlayerControllerScript : MonoBehaviour {
 		//don't do anything if it's frozen, unless the boss is dead
 		//then respawn everyone
 		if (isFrozen && CameraScript.isBoss){
+			if(hasProjectile){
+				Vector3 projectileVelocity = Vector3.zero;
+				projectileVelocity.x = (Random.value*2) - 1;
+				projectileVelocity.y = Random.value;
+				shootProjectile(projectileVelocity * projectileSpeed, true);
+				hasProjectile=false;
+			}
 			return;
 		}
 		else if (isFrozen && !CameraScript.isBoss){
@@ -271,8 +281,10 @@ public class PlayerControllerScript : MonoBehaviour {
 				hasProjectile = false;
 			}
 			//ball warning before forced out after neutral
-			if (Time.timeSinceLevelLoad > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
+			if (Time.timeSinceLevelLoad > ballFireTime-ballWarnTime && hasProjectile 
+					&& !CameraScript.isBoss && !beenWarned){
 				arrowAnimator.SetTrigger("redArrow");
+				beenWarned = true;
 			}
 
 			//ball forced out after neutral
@@ -325,7 +337,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	//will instantiate a projectile with initial velocity "velocity" passed in
 	//neutral will be true if the ball was force ejected so the projectile should be neutral
 	void shootProjectile(Vector3 velocity, bool neutral){
-
+		
+		beenWarned = false;
 		//ballInd.GetComponent<Renderer>().enabled = false;
 
 		GameObject temp = (GameObject)Instantiate(projectile, transform.position, Quaternion.Euler(Vector3.zero));
@@ -340,6 +353,7 @@ public class PlayerControllerScript : MonoBehaviour {
 			//need to show through animation. stored in publuc variable for now
 			temp.GetComponent<Renderer> ().material = this.tempMat;
 			temp.GetComponent<TrailRenderer>().material = tempMat;
+			temp.GetComponent<ProjectileScript>().frameWait = 3;
 		}
 		//ball force ejected
 		else{
@@ -392,7 +406,6 @@ public class PlayerControllerScript : MonoBehaviour {
 		headVelocity.x = (Random.value*2) - 1;
 		headVelocity.y = Random.value;
 		head.GetComponent<Rigidbody> ().velocity = headVelocity * projectileSpeed;
-		print (headVelocity);
 		currentHealth = maxHealth;
 		//remove the ball if you have it
 		if (hasProjectile){

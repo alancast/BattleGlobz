@@ -16,6 +16,9 @@ public class BossBulletScript : MonoBehaviour {
 		else if (other.gameObject.tag == "Player"){
 			PlayerControllerScript player = other.gameObject.GetComponent<PlayerControllerScript>();
 			int otherPlayerNum = player.playerNum;
+			if (other.gameObject.GetComponent<PlayerControllerScript> ().isFrozen){
+				return;
+			}
 			other.gameObject.GetComponent<PlayerControllerScript> ().isFrozen = true;
 			CameraScript.playerCountAlive--;
 			Destroy(this.gameObject);

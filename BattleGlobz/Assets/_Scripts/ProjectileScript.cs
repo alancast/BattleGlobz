@@ -2,17 +2,22 @@
 using System.Collections;
 
 public class ProjectileScript : MonoBehaviour {
-	public int ownerNum;
-	public float throwAt = 0f;
-	private float throwTimer = .1f;
-	private float neutralThresh = 1000f;
-	private int frameCounter = 0;
-	private bool hasBounced = false;
-	public bool neutralOnBounce;
-	public Animator		ballAnim;
+	public int 		ownerNum;
+	public float 	throwAt = 0f;
+	private float 	throwTimer = .1f;
+	private float 	neutralThresh = 1000f;
+	private int 	frameCounter = 0;
+	//how long this will wait before being fired
+	public int 		frameWait = 1;
+	private bool 	hasBounced = false;
+	public bool 	neutralOnBounce;
+	public Animator	ballAnim;
+	//set when ball gets ejected, set in inspector
+	public Material	whiteMat;
 
 	void Awake(){
 		ownerNum = -1;
+		GetComponent<TrailRenderer>().material = whiteMat;
 	}
 
 	void OnCollisionStay(Collision collision){
@@ -23,6 +28,9 @@ public class ProjectileScript : MonoBehaviour {
 	
 	// Use this for initialization
 	void OnCollisionEnter(Collision collision){
+		if (frameCounter < frameWait){
+			return;
+		}
 		Collider other = collision.collider;
 		switch (other.gameObject.tag) {
 		case "Player":
@@ -55,6 +63,7 @@ public class ProjectileScript : MonoBehaviour {
 				GetComponent<Renderer> ().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				GetComponent<TrailRenderer>().material = other.transform.parent.GetComponent<PlayerControllerScript> ().tempMat;
 				ownerNum = otherPlayerNum;
+				ballAnim.SetInteger("playerNum", ownerNum);
 				other.transform.parent.GetComponent<PlayerControllerScript>().shieldAnimator.SetTrigger ("Hit");
 			}
 			break;
@@ -85,7 +94,7 @@ public class ProjectileScript : MonoBehaviour {
 
 		tmp.AddForce (tmpForce);
 
-		if(frameCounter++ == 1)
+		if(frameCounter++ == frameWait)
 			this.GetComponent<Collider> ().enabled = true;
 
 		if (offScreen()) {
