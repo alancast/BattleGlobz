@@ -51,11 +51,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public Animator		bottomFace;
 	public Animator		ballIndicator;
 
-	/// <summary>
-	/// //////////////////////temp public material
 	public Material tempMat;
-	/// </summary>
-
 
 	//Handling death and respawning
 	Vector3				respawnPoint;
@@ -129,15 +125,17 @@ public class PlayerControllerScript : MonoBehaviour {
 		
 		//respawn if have been dead for long enough and there is not a boss
 		//if there is a boss that will handle the respawns
-		if (isDead && Time.time > timeOfDeath + deathTimer && !CameraScript.isBoss){
+		if (isDead && Time.timeSinceLevelLoad > timeOfDeath + deathTimer && !CameraScript.isBoss){
 			handleRespawn ();
 		}	
 
 		//if you are in a cutscene don't do any of the movement stuff
-		if (isInCutscene && (Time.time < cutsceneStart + cutsceneLength)) {
+
+		if (isInCutscene && (Time.timeSinceLevelLoad < cutsceneStart + cutsceneLength)) {
 			//print ("I'm in cutscene");
+
 			return;
-		} else if (isInCutscene && (Time.time >= cutsceneStart + cutsceneLength)) {
+		} else if (isInCutscene && (Time.timeSinceLevelLoad >= cutsceneStart + cutsceneLength)) {
 			isInCutscene = false;
 		}
 		isGrounded ();
@@ -185,13 +183,13 @@ public class PlayerControllerScript : MonoBehaviour {
 			thisRigidbody.velocity = new Vector3(0,0,0);
 			isDashing = true;
 			canDash = false;
-			dashTime = Time.time;
+			dashTime = Time.timeSinceLevelLoad;
 			dashForce = Vector3.zero;
 			dashForce.x = dashSpeed * gameController.LeftStickX;
 			dashForce.y = dashSpeed * gameController.LeftStickY;
 			thisRigidbody.AddForce(dashForce);
 		}
-		if (Time.time > dashTime + dashLength && isDashing) {
+		if (Time.timeSinceLevelLoad > dashTime + dashLength && isDashing) {
 			isDashing = false;
 		}
 
@@ -273,12 +271,12 @@ public class PlayerControllerScript : MonoBehaviour {
 				hasProjectile = false;
 			}
 			//ball warning before forced out after neutral
-			if (Time.time > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
+			if (Time.timeSinceLevelLoad > ballFireTime-ballWarnTime && hasProjectile && !CameraScript.isBoss){
 				arrowAnimator.SetTrigger("redArrow");
 			}
 
 			//ball forced out after neutral
-			if (Time.time > ballFireTime && hasProjectile && !CameraScript.isBoss){
+			if (Time.timeSinceLevelLoad > ballFireTime && hasProjectile && !CameraScript.isBoss){
 				Vector3 projectileVelocity = Vector3.zero;
 				projectileVelocity.x = (Random.value*2) - 1;
 				projectileVelocity.y = Random.value;
@@ -337,7 +335,7 @@ public class PlayerControllerScript : MonoBehaviour {
 
 			temp.GetComponent<Rigidbody>().velocity = velocity;
 			temp.GetComponent<ProjectileScript> ().ownerNum = playerNum;
-			temp.GetComponent<ProjectileScript> ().throwAt = Time.time;
+			temp.GetComponent<ProjectileScript> ().throwAt = Time.timeSinceLevelLoad;
 
 			//need to show through animation. stored in publuc variable for now
 			temp.GetComponent<Renderer> ().material = this.tempMat;
@@ -389,7 +387,12 @@ public class PlayerControllerScript : MonoBehaviour {
 		}
 		Vector3 deadHeadPos = this.transform.position;
 		deadHeadPos.y += 1;
-		Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero));
+		GameObject head = Instantiate(deadHead, deadHeadPos, Quaternion.Euler(Vector3.zero)) as GameObject;
+		Vector3 headVelocity = Vector3.zero;
+		headVelocity.x = (Random.value*2) - 1;
+		headVelocity.y = Random.value;
+		head.GetComponent<Rigidbody> ().velocity = headVelocity * projectileSpeed;
+		print (headVelocity);
 		currentHealth = maxHealth;
 		//remove the ball if you have it
 		if (hasProjectile){
@@ -402,7 +405,7 @@ public class PlayerControllerScript : MonoBehaviour {
 		bottomFace.SetTrigger("death");
 		this.transform.position = new Vector3 (-100, -100, 0);
 		CameraScript.instance.source.PlayOneShot(CameraScript.instance.death);
-		timeOfDeath = Time.time;
+		timeOfDeath = Time.timeSinceLevelLoad;
 		isDead = true;
 		//if died while boss decrement the player count alive
 		CameraScript.instance.addScore(killerNum,1);
@@ -428,7 +431,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public void pickUpProjectile(){
 		//ballInd.GetComponent<Renderer>().enabled = true;
 		hasProjectile = true;
-		ballFireTime = Time.time + ballHoldTime;
+		ballFireTime = Time.timeSinceLevelLoad + ballHoldTime;
 	}
 
 	public bool hasBall(){
@@ -438,7 +441,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	public void startCutscene(float length){
 		isInCutscene = true;
 		cutsceneLength = length;
-		cutsceneStart = Time.time;
+		cutsceneStart = Time.timeSinceLevelLoad;
 	}
 }
 	

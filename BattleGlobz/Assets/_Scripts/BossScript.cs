@@ -85,9 +85,9 @@ public class BossScript : MonoBehaviour {
 		}
 		//to stop shooting without releasing the trigger
 		if(Time.timeSinceLevelLoad > stopShootingTime && !onCoolDown){
-			coolDownTime = Time.time;
+			coolDownTime = Time.timeSinceLevelLoad;
 			onCoolDown = true;
-			coolDownLength = (Time.time - startShootingTime);
+			coolDownLength = (Time.timeSinceLevelLoad - startShootingTime);
 			isShooting = false;
 			stopShootingTime += 100000;
 			Vector3 vel = thisRigidbody.velocity;
@@ -99,7 +99,7 @@ public class BossScript : MonoBehaviour {
 			handleShooting();
 		}
 		if (onCoolDown) {
-			float ratio = coolDownLength - (Time.timeSinceLevelLoad - coolDownTime);
+			float ratio = (coolDownLength - (Time.timeSinceLevelLoad - coolDownTime))/2;
 			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
 		}
 		if (Time.timeSinceLevelLoad > coolDownTime + coolDownLength && onCoolDown){
@@ -138,26 +138,26 @@ public class BossScript : MonoBehaviour {
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
 		if (gameController.RightTrigger.IsPressed) {
 			if (!isShooting){
-				stopShootingTime = Time.time + shootingLength;
-				startShootingTime = Time.time;
+				stopShootingTime = Time.timeSinceLevelLoad + shootingLength;
+				startShootingTime = Time.timeSinceLevelLoad;
 			}
 			thisRigidbody.velocity = Vector3.zero;
 			isShooting = true;
 			//Handle coolDownSphere size
-			float elapsed = 1 - (stopShootingTime - Time.time);
-			float ratio = elapsed/shootingLength;
+			float elapsed = 1 - (stopShootingTime - Time.timeSinceLevelLoad);
+			float ratio = (elapsed/shootingLength)/2;
 			coolDownSphere.transform.localScale = new Vector3(ratio, ratio, 1.1f);
 
-			if (Time.time > nextShotTime){
+			if (Time.timeSinceLevelLoad > nextShotTime){
 				Vector3 projectileVelocity = shootAngle();
 				shootProjectile(projectileVelocity * bossBulletSpeed);
-				nextShotTime = Time.time + shootFrequency;
+				nextShotTime = Time.timeSinceLevelLoad + shootFrequency;
 			}
 		}
 		if (gameController.RightTrigger.WasReleased) {
-			coolDownTime = Time.time;
+			coolDownTime = Time.timeSinceLevelLoad;
 			onCoolDown = true;
-			coolDownLength = (Time.time - startShootingTime);
+			coolDownLength = (Time.timeSinceLevelLoad - startShootingTime);
 			isShooting = false;
 			stopShootingTime += 100000;
 			Vector3 vel = thisRigidbody.velocity;
@@ -256,7 +256,7 @@ public class BossScript : MonoBehaviour {
 		GameObject temp = (GameObject)Instantiate(projectile, GemPos, Quaternion.Euler(Vector3.zero));
 		temp.GetComponent<Rigidbody>().velocity = velocity;
 		temp.GetComponent<BossBulletScript> ().ownerNum = playerNum;
-		temp.GetComponent<BossBulletScript> ().throwAt = Time.time;
+		temp.GetComponent<BossBulletScript> ().throwAt = Time.timeSinceLevelLoad;
 	}
 
 	void handleBossDeath(){
