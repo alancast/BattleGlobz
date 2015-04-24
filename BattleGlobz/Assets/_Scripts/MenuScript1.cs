@@ -32,7 +32,7 @@ public class MenuScript1 : MonoBehaviour {
 		}
 
 		if (gameController.DPadLeft.WasPressed){
-			Application.LoadLevel("_Scene_2PlayerB");
+			Application.LoadLevel("_Scene_2Player");
 
 		}
 		if (gameController.DPadDown.WasPressed){

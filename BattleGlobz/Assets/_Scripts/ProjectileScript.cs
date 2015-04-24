@@ -17,6 +17,7 @@ public class ProjectileScript : MonoBehaviour {
 
 	void Awake(){
 		ownerNum = -1;
+		frameWait = 2;
 		GetComponent<TrailRenderer>().material = whiteMat;
 	}
 

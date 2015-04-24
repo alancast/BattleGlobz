@@ -116,7 +116,7 @@ public class BossScript : MonoBehaviour {
 		if (Time.timeSinceLevelLoad > endGameTime + endGamePause){
 			LevelMovementScript.stopMoving = false;
 			CameraScript.isBoss = false;
-			Application.LoadLevel("_Scene_Menu");
+			Application.LoadLevel("_Scene_MainMenu");
 //			CameraScript.instance.timeText.text = "Refresh";
 		}
 	}
