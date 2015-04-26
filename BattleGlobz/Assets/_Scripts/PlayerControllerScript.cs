@@ -239,7 +239,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	//controls the players jumping every update
 	void handleJumping(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-		if (gameController.RightBumper.WasPressed || gameController.Action1.WasPressed){
+		if (gameController.Action1.WasPressed){
 			if (thisRigidbody.velocity.y < maxJumpSpeed && grounded){
 				thisRigidbody.AddForce(Vector3.up*jumpAccel);
 				globAnimator1.SetTrigger("jump");
@@ -254,7 +254,7 @@ public class PlayerControllerScript : MonoBehaviour {
 	void handleGunAndShield(){
 			var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 			//fire gun
-			if (gameController.RightTrigger.WasPressed && hasProjectile && !shieldUp){
+			if (gameController.Action2.WasPressed && hasProjectile && !shieldUp){
 				Vector3 projectileVelocity = shootAngle();
 				float gunAngle = gun.transform.eulerAngles.z;
 				if(grounded && (gunAngle < 360 && gunAngle > 180)){
@@ -284,13 +284,13 @@ public class PlayerControllerScript : MonoBehaviour {
 				hasProjectile=false;
 			}
 			// generate shield
-			if (gameController.LeftTrigger.WasPressed) { 
+			if (gameController.Action4.WasPressed) { 
 				shieldUp = true;
 				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 				shield.GetComponent<Collider>().enabled = true;
 			}
 			// remove shield
-			if (gameController.LeftTrigger.WasReleased) {
+			if (gameController.Action4.WasReleased) {
 				shieldUp = false;
 				shield.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 				shield.GetComponent<Collider>().enabled = false;
@@ -351,8 +351,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	bool rightStickPressed(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 		float threshold = .2f;
-		if (Mathf.Abs(gameController.RightStickX) > threshold ||
-		    Mathf.Abs(gameController.RightStickY) > threshold){
+		if (Mathf.Abs(gameController.LeftStickX) > threshold ||
+		    Mathf.Abs(gameController.LeftStickY) > threshold){
 			return true;
 		}
 		return false;
@@ -362,8 +362,8 @@ public class PlayerControllerScript : MonoBehaviour {
 	//currently is, to where it should be with the RightStick
 	float rotationAmount(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-		float y = gameController.RightStickY;
-		float x = gameController.RightStickX;
+		float y = gameController.LeftStickY;
+		float x = gameController.LeftStickX;
 		float oldAngle = gun.transform.eulerAngles.z;
 		float newAngle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
 		return newAngle - oldAngle;

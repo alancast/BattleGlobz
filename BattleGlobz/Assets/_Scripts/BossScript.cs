@@ -136,7 +136,7 @@ public class BossScript : MonoBehaviour {
 
 	void handleShooting(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices [playerNum] : null;
-		if (gameController.RightTrigger.IsPressed) {
+		if (gameController.Action2.IsPressed) {
 			if (!isShooting){
 				stopShootingTime = Time.timeSinceLevelLoad + shootingLength;
 				startShootingTime = Time.timeSinceLevelLoad;
@@ -154,7 +154,7 @@ public class BossScript : MonoBehaviour {
 				nextShotTime = Time.timeSinceLevelLoad + shootFrequency;
 			}
 		}
-		if (gameController.RightTrigger.WasReleased) {
+		if (gameController.Action2.WasReleased) {
 			coolDownTime = Time.timeSinceLevelLoad;
 			onCoolDown = true;
 			coolDownLength = (Time.timeSinceLevelLoad - startShootingTime);
@@ -174,8 +174,8 @@ public class BossScript : MonoBehaviour {
 	bool rightStickPressed(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
 		float threshold = .2f;
-		if (Mathf.Abs(gameController.RightStickX) > threshold ||
-		    Mathf.Abs(gameController.RightStickY) > threshold){
+		if (Mathf.Abs(gameController.LeftStickX) > threshold ||
+		    Mathf.Abs(gameController.LeftStickY) > threshold){
 			return true;
 		}
 		return false;
@@ -185,8 +185,8 @@ public class BossScript : MonoBehaviour {
 	//currently is, to where it should be with the RightStick
 	float rotationAmount(){
 		var gameController = (InputManager.Devices.Count > playerNum) ? InputManager.Devices[playerNum] : null;
-		float y = gameController.RightStickY;
-		float x = gameController.RightStickX;
+		float y = gameController.LeftStickY;
+		float x = gameController.LeftStickX;
 		float oldAngle = gun.transform.eulerAngles.z;
 		float newAngle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
 		return newAngle - oldAngle;
